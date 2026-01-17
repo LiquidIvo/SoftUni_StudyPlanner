@@ -1,4 +1,4 @@
-﻿using StudyPlanner.Common;
+﻿
 using System.ComponentModel.DataAnnotations;
 using static StudyPlanner.Common.EntityValidation;
 namespace StudyPlanner.Models
