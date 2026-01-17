@@ -12,7 +12,7 @@ namespace StudyPlanner.Models
         [Required]
         [ForeignKey(nameof(StudyTask))]
         public int StudyTaskId { get; set; }
-        public StudyTask StudyTask { get; set; } = null!;
+        public virtual StudyTask StudyTask { get; set; } = null!;
 
         [Required]
         public DateTime StartTime { get; set; }
