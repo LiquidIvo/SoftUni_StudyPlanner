@@ -1,5 +1,6 @@
 ﻿using static StudyPlanner.Common.EntityValidation;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudyPlanner.Models
 {
@@ -9,6 +10,7 @@ namespace StudyPlanner.Models
         public int Id { get; set; }
 
         [Required]
+        [ForeignKey(nameof(StudyTask))]
         public int StudyTaskId { get; set; }
         public StudyTask StudyTask { get; set; } = null!;
 

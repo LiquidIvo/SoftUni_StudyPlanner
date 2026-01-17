@@ -13,7 +13,8 @@ namespace StudyPlanner.Models
         [MaxLength(SubjectNameMaxLength)]
         public string Name { get; set; } = null!;
 
-
-
+        public virtual ICollection<StudyTask> StudyTasks { get; set; } = new HashSet<StudyTask>();
     }
+
 }
+

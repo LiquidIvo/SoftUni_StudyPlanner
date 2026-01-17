@@ -17,5 +17,7 @@ namespace StudyPlanner.Models
         [MinLength(CategoryColorMinLength)]
         [MaxLength(CategoryColorMaxLength)]
         public string Color { get; set; } = null!;
+
+        public virtual ICollection<StudyTask> StudyTasks { get; set; } = new HashSet<StudyTask>();
     }
 }

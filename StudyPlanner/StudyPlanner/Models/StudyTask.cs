@@ -31,12 +31,17 @@ namespace StudyPlanner.Models
 
 
         [Required]
+        [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
 
 
         [Required]
+        [ForeignKey(nameof(Subject))]
         public int SubjectId { get; set; }
         public Subject Subject { get; set; } = null!;
+
+        public virtual ICollection<StudySession> StudySessions { get; set; } = new HashSet<StudySession>();
     }
 }
+
