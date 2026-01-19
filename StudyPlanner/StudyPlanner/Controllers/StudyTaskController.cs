@@ -49,26 +49,30 @@ namespace StudyPlanner.Controllers
         // GET: StudyTask/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Color");
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "Name");
+            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name");
+            ViewBag.SubjectId = new SelectList(_context.Subjects, "Id", "Name");
             return View();
         }
 
         // POST: StudyTask/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,DueDate,Priority,Status,CategoryId,SubjectId")] StudyTask studyTask)
         {
+            // Remove navigation properties from ModelState validation
+            ModelState.Remove("Category");
+            ModelState.Remove("Subject");
+            ModelState.Remove("StudySessions");
+
             if (ModelState.IsValid)
             {
                 _context.Add(studyTask);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Color", studyTask.CategoryId);
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "Name", studyTask.SubjectId);
+
+            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", studyTask.CategoryId);
+            ViewBag.SubjectId = new SelectList(_context.Subjects, "Id", "Name", studyTask.SubjectId);
             return View(studyTask);
         }
 
@@ -85,14 +89,12 @@ namespace StudyPlanner.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Color", studyTask.CategoryId);
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "Name", studyTask.SubjectId);
+            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", studyTask.CategoryId);
+            ViewBag.SubjectId = new SelectList(_context.Subjects, "Id", "Name", studyTask.SubjectId);
             return View(studyTask);
         }
 
         // POST: StudyTask/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,DueDate,Priority,Status,CategoryId,SubjectId")] StudyTask studyTask)
@@ -101,6 +103,11 @@ namespace StudyPlanner.Controllers
             {
                 return NotFound();
             }
+
+            // Remove navigation properties from ModelState validation
+            ModelState.Remove("Category");
+            ModelState.Remove("Subject");
+            ModelState.Remove("StudySessions");
 
             if (ModelState.IsValid)
             {
@@ -122,8 +129,8 @@ namespace StudyPlanner.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Color", studyTask.CategoryId);
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "Id", "Name", studyTask.SubjectId);
+            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", studyTask.CategoryId);
+            ViewBag.SubjectId = new SelectList(_context.Subjects, "Id", "Name", studyTask.SubjectId);
             return View(studyTask);
         }
 
