@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
 using StudyPlanner.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace StudyPlanner.Controllers
 {
@@ -89,6 +90,7 @@ namespace StudyPlanner.Controllers
             {
                 return NotFound();
             }
+
             ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", studyTask.CategoryId);
             ViewBag.SubjectId = new SelectList(_context.Subjects, "Id", "Name", studyTask.SubjectId);
             return View(studyTask);
@@ -108,6 +110,7 @@ namespace StudyPlanner.Controllers
             ModelState.Remove("Category");
             ModelState.Remove("Subject");
             ModelState.Remove("StudySessions");
+           
 
             if (ModelState.IsValid)
             {
