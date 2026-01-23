@@ -57,7 +57,7 @@ namespace StudyPlanner.Controllers
         // POST: StudyTask/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,DueDate,Priority,Status,CategoryId,SubjectId")] StudyTask studyTask)
+        public async Task<IActionResult> Create([Bind("Title,Description,DueDate,Priority,Status,CategoryId,SubjectId")] StudyTask studyTask)
         {
             // Remove navigation properties from ModelState validation
             ModelState.Remove("Category");
@@ -97,7 +97,7 @@ namespace StudyPlanner.Controllers
         // POST: StudyTask/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,DueDate,Priority,Status,CategoryId,SubjectId")] StudyTask studyTask)
+        public async Task<IActionResult> Edit(int id, [Bind("Title,Description,DueDate,Priority,Status,CategoryId,SubjectId")] StudyTask studyTask)
         {
             if (id != studyTask.Id)
             {

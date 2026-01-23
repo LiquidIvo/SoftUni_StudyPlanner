@@ -54,7 +54,7 @@ namespace StudyPlanner.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Subject subject)
+        public async Task<IActionResult> Create([Bind("Name")] Subject subject)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace StudyPlanner.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Subject subject)
+        public async Task<IActionResult> Edit(int id, [Bind("Name")] Subject subject)
         {
             if (id != subject.Id)
             {
