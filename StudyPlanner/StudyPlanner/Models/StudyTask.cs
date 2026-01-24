@@ -1,5 +1,6 @@
 ﻿using StudyPlanner.Common;
 using StudyPlanner.Enums;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static StudyPlanner.Common.EntityValidation;
@@ -30,13 +31,15 @@ namespace StudyPlanner.Models
         public Enums.TaskStatus Status { get; set; }
 
 
-        [Required]
+        [Required(ErrorMessage = "Category is required")]
+        [DisplayName("Category")]
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; } = null!;
 
 
-        [Required]
+        [Required(ErrorMessage = "Subject is required")]
+        [DisplayName("Subject")]
         [ForeignKey(nameof(Subject))]
         public int SubjectId { get; set; }
         public virtual Subject Subject { get; set; } = null!;
