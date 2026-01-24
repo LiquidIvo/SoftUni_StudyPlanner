@@ -46,7 +46,7 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DueDate)
+                @item.DueDate.ToString("MM/dd/yyyy")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Priority)
