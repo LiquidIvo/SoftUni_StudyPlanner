@@ -26,22 +26,7 @@ namespace StudyPlanner.Controllers
         }
 
         // GET: Subject/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var subject = await _context.Subjects
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (subject == null)
-            {
-                return NotFound();
-            }
-
-            return View(subject);
-        }
+       
 
         // GET: Subject/Create
         public IActionResult Create()
