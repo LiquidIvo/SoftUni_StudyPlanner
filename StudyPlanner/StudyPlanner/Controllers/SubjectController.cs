@@ -71,7 +71,7 @@ namespace StudyPlanner.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name")] Subject subject)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Subject subject)
         {
             if (id != subject.Id)
             {
