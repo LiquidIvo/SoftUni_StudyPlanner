@@ -11,7 +11,7 @@ namespace StudyPlanner
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = GetConnection(builder.Configuration);
+            string? connectionString = GetConnection(builder.Configuration);
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -51,7 +51,7 @@ namespace StudyPlanner
         public static string GetConnection(IConfiguration configuration)
         {
             
-            var connection = configuration.GetConnectionString("DevConnection");
+            string? connection = configuration.GetConnectionString("DevConnection");
             if (!string.IsNullOrWhiteSpace(connection))
             {
                 return connection;

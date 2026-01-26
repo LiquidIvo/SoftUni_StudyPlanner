@@ -44,7 +44,7 @@
             @Html.DisplayNameFor(model => model.Category)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.Color)
+            @Html.DisplayFor(model => model.Category.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Subject)
@@ -58,3 +58,45 @@
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+<div class="mb-3">
+    <a asp-controller="StudySession"
+       asp-action="Create"
+       asp-route-studyTaskId="@Model.Id"
+       class="btn btn-success">
+        + Add Study Session
+    </a>
+</div>
+<h4>Study Sessions</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Notes</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.StudySessions != null && Model.StudySessions.Any())
+        {
+            foreach (var session in Model.StudySessions)
+            {
+                <tr>
+                    <td>@session.StartTime.ToString("g")</td>
+                    <td>@session.EndTime.ToString("g")</td>
+                    <td>@session.Notes</td>
+                    <td>
+                        <a asp-controller="StudySession" asp-action="Edit" asp-route-id="@session.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-controller="StudySession" asp-action="Delete" asp-route-id="@session.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No study sessions yet.</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -38,7 +38,9 @@ namespace StudyPlanner.Controllers
             var studyTask = await _context.StudyTasks
                 .Include(s => s.Category)
                 .Include(s => s.Subject)
+                .Include(s => s.StudySessions) 
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (studyTask == null)
             {
                 return NotFound();
