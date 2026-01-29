@@ -2,7 +2,7 @@
 using static StudyPlanner.Common.EntityValidation;
 namespace StudyPlanner.ViewModels.Category
 {
-    public class CategoryInputModelBase
+    public abstract class CategoryInputModelBase
     {
         [Required]
         [MinLength(CategoryNameMinLength)]
