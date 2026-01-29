@@ -4,10 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
 using StudyPlanner.Models;
 using StudyPlanner.ViewModels.Category;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace StudyPlanner.Controllers
 {
@@ -23,7 +20,9 @@ namespace StudyPlanner.Controllers
         // GET: Category
         public async Task<IActionResult> Index()
         {
+           
             var categories = await _context.Categories
+                .AsNoTracking()
                 .Select(c => new CategoryViewModel
                 {
                     Id = c.Id,
@@ -32,22 +31,17 @@ namespace StudyPlanner.Controllers
                 })
                 .ToListAsync();
 
-
             return View(categories);
         }
-
-        
-       
 
         // GET: Category/Create
         public IActionResult Create()
         {
-            return View();
+            
+            return View(new CategoryCreateInputModel());
         }
 
         // POST: Category/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryCreateInputModel input)
@@ -68,26 +62,26 @@ namespace StudyPlanner.Controllers
         }
 
         // GET: Category/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories
+                .AsNoTracking()
+                .Where(c => c.Id == id)
+                .Select(c => new CategoryEditInputModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Color = c.Color
+                })
+                .FirstOrDefaultAsync();
 
             if (category == null)
                 return NotFound();
 
-            var model = new CategoryEditInputModel
-            {
-                Id = category.Id,
-                Name = category.Name,
-                Color = category.Color
-            };
-
-            return View(model);
+            return View(category);
         }
 
         // POST: Category/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(CategoryEditInputModel input)
@@ -100,6 +94,7 @@ namespace StudyPlanner.Controllers
             if (category == null)
                 return NotFound();
 
+            
             category.Name = input.Name;
             category.Color = input.Color;
 
@@ -109,22 +104,23 @@ namespace StudyPlanner.Controllers
         }
 
         // GET: Category/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var model = await _context.Categories
-               .Where(c => c.Id == id)
-               .Select(c => new CategoryViewModel
-               {
-                   Id = c.Id,
-                   Name = c.Name,
-                   Color = c.Color
-               })
-               .FirstOrDefaultAsync();
+            var category = await _context.Categories
+                .AsNoTracking()
+                .Where(c => c.Id == id)
+                .Select(c => new CategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Color = c.Color
+                })
+                .FirstOrDefaultAsync();
 
-            if (model == null)
+            if (category == null)
                 return NotFound();
 
-            return View(model);
+            return View(category);
         }
 
         // POST: Category/Delete/5
@@ -132,17 +128,16 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            
+            var category = new Category { Id = id };
+            _context.Categories.Attach(category);
+            _context.Categories.Remove(category);
 
-            if (category != null)
-            {
-                _context.Categories.Remove(category);
-                await _context.SaveChangesAsync();
-            }
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        
+
     }
 }
