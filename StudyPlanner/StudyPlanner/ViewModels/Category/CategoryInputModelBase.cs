@@ -10,8 +10,8 @@ namespace StudyPlanner.ViewModels.Category
         public string Name { get; set; } = null!;
 
         [Required]
-        [MinLength(CategoryColorMinLength)]
-        [MaxLength(CategoryColorMaxLength)]
+        [StringLength(CategoryColorLength)]
+        [RegularExpression("^#([0-9A-Fa-f]{6})$", ErrorMessage = "Invalid hex color.")]
         public string Color { get; set; } = null!;
     }
 }

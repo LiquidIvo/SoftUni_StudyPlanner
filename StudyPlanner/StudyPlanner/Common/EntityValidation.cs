@@ -10,8 +10,8 @@
         // Category 
         public const int CategoryNameMinLength = 1;
         public const int CategoryNameMaxLength = 50;
-        public const int CategoryColorMinLength = 3; 
-        public const int CategoryColorMaxLength = 20;
+       
+        public const int CategoryColorLength = 7;
 
         //  Subject 
         public const int SubjectNameMinLength = 1;
