@@ -2,7 +2,7 @@
 using static StudyPlanner.Common.EntityValidation;
 namespace StudyPlanner.ViewModels.StudyTask
 {
-    public abstract class StudyTaskBaseModel
+    public abstract class StudyTaskBaseModel 
     {
         [Required]
         [MinLength(StudyTaskTitleMinLength)]
@@ -29,5 +29,7 @@ namespace StudyPlanner.ViewModels.StudyTask
         [Required(ErrorMessage = "Subject is required")]
         [Display(Name = "Subject")]
         public int SubjectId { get; set; }
+
+       
     }
 }

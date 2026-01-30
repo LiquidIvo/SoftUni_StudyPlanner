@@ -29,6 +29,7 @@ namespace StudyPlanner.Controllers
            .Select(t => new StudyTaskViewModel
            {
                Id = t.Id,
+               Description = t.Description,
                Title = t.Title,
                DueDate = t.DueDate,
                Priority = t.Priority.ToString(),
