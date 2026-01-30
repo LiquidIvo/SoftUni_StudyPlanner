@@ -1,4 +1,4 @@
-﻿@model StudyPlanner.Models.StudyTask
+﻿@model StudyPlanner.ViewModels.StudyTask.StudyTaskDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -44,13 +44,13 @@
             @Html.DisplayNameFor(model => model.Category)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.Name)
+            @Html.DisplayFor(model => model.Category)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Subject)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Subject.Name)
+            @Html.DisplayFor(model => model.Subject)
         </dd>
     </dl>
 </div>
@@ -61,7 +61,7 @@
 <div class="mb-3">
     <a asp-controller="StudySession"
        asp-action="Create"
-       asp-route-studyTaskId="@Model.Id"
+       asp-route-studyTaskId="@Model?.Id"
        class="btn btn-success">
         + Add Study Session
     </a>
@@ -77,7 +77,7 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.StudySessions != null && Model.StudySessions.Any())
+        @if (Model?.StudySessions != null && Model.StudySessions.Any())
         {
             foreach (var session in Model.StudySessions)
             {

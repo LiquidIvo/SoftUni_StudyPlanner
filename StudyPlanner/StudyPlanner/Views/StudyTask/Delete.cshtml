@@ -1,4 +1,4 @@
-﻿@model StudyPlanner.Models.StudyTask
+﻿@model StudyPlanner.ViewModels.StudyTask.StudyTaskViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -45,13 +45,13 @@
             @Html.DisplayNameFor(model => model.Category)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.Color)
+            @Html.DisplayFor(model => model.Category)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Subject)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Subject.Name)
+            @Html.DisplayFor(model => model.Subject)
         </dd>
     </dl>
     

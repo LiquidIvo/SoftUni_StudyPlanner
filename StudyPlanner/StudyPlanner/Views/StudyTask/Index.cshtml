@@ -1,4 +1,4 @@
-﻿@model IEnumerable<StudyPlanner.Models.StudyTask>
+﻿@model IEnumerable<StudyPlanner.ViewModels.StudyTask.StudyTaskViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -55,10 +55,10 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
+                @Html.DisplayFor(modelItem => item.Category)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Subject.Name)
+                @Html.DisplayFor(modelItem => item.Subject)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

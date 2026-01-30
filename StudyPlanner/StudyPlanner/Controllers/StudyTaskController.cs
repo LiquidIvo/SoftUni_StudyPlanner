@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
 using StudyPlanner.Models;
+using StudyPlanner.ViewModels.StudyTask;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,140 +24,163 @@ namespace StudyPlanner.Controllers
         // GET: StudyTask
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.StudyTasks.Include(s => s.Category).Include(s => s.Subject);
-            return View(await applicationDbContext.ToListAsync());
+            var tasks = await _context.StudyTasks
+           .AsNoTracking()
+           .Select(t => new StudyTaskViewModel
+           {
+               Id = t.Id,
+               Title = t.Title,
+               DueDate = t.DueDate,
+               Priority = t.Priority.ToString(),
+               Status = t.Status.ToString(),
+               Category = t.Category.Name,
+               Subject = t.Subject.Name
+           })
+           .ToListAsync();
+
+            return View(tasks);
         }
 
         // GET: StudyTask/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var model = await _context.StudyTasks
+             .AsNoTracking()
+             .Where(t => t.Id == id)
+             .Select(t => new StudyTaskDetailsViewModel
+             {
+                 Id = t.Id,
+                 Title = t.Title,
+                 Description = t.Description,
+                 DueDate = t.DueDate,
+                 Priority = t.Priority.ToString(),
+                 Status = t.Status.ToString(),
+                 Category = t.Category.Name,
+                 Subject = t.Subject.Name,
+                 StudySessions = t.StudySessions
+                     .Select(s => new StudySessionItemViewModel
+                     {
+                         Id = s.Id,
+                         StartTime = s.StartTime,
+                         EndTime = s.EndTime,
+                         Notes = s.Notes
+                     })
+                     .ToList()
+             })
+             .FirstOrDefaultAsync();
 
-            var studyTask = await _context.StudyTasks
-                .Include(s => s.Category)
-                .Include(s => s.Subject)
-                .Include(s => s.StudySessions) 
-                .FirstOrDefaultAsync(m => m.Id == id);
+            if (model == null) return NotFound();
 
-            if (studyTask == null)
-            {
-                return NotFound();
-            }
-
-            return View(studyTask);
+            return View(model);
         }
 
         // GET: StudyTask/Create
         public IActionResult Create()
         {
-            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name");
-            ViewBag.SubjectId = new SelectList(_context.Subjects, "Id", "Name");
-            return View();
+            LoadDropdowns();
+            return View(new StudyTaskCreateModel());
         }
 
         // POST: StudyTask/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,DueDate,Priority,Status,CategoryId,SubjectId")] StudyTask studyTask)
+        public async Task<IActionResult> Create(StudyTaskCreateModel model)
         {
-            // Remove navigation properties from ModelState validation
-            ModelState.Remove("Category");
-            ModelState.Remove("Subject");
-            ModelState.Remove("StudySessions");
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(studyTask);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                LoadDropdowns();
+                return View(model);
             }
 
-            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", studyTask.CategoryId);
-            ViewBag.SubjectId = new SelectList(_context.Subjects, "Id", "Name", studyTask.SubjectId);
-            return View(studyTask);
+            var task = new StudyTask
+            {
+                Title = model.Title,
+                Description = model.Description,
+                DueDate = model.DueDate,
+                Priority = model.Priority,
+                Status = model.Status,
+                CategoryId = model.CategoryId,
+                SubjectId = model.SubjectId
+            };
+
+            _context.StudyTasks.Add(task);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: StudyTask/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            var model = await _context.StudyTasks
+            .AsNoTracking()
+            .Where(t => t.Id == id)
+            .Select(t => new StudyTaskEditModel
             {
-                return NotFound();
-            }
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                DueDate = t.DueDate,
+                Priority = t.Priority,
+                Status = t.Status,
+                CategoryId = t.CategoryId,
+                SubjectId = t.SubjectId
+            })
+            .FirstOrDefaultAsync();
 
-            var studyTask = await _context.StudyTasks.FindAsync(id);
-            if (studyTask == null)
-            {
-                return NotFound();
-            }
+            if (model == null) return NotFound();
 
-            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", studyTask.CategoryId);
-            ViewBag.SubjectId = new SelectList(_context.Subjects, "Id", "Name", studyTask.SubjectId);
-            return View(studyTask);
+            LoadDropdowns();
+            return View(model);
         }
 
         // POST: StudyTask/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,DueDate,Priority,Status,CategoryId,SubjectId")] StudyTask studyTask)
+        public async Task<IActionResult> Edit(StudyTaskEditModel model)
         {
-            if (id != studyTask.Id)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                LoadDropdowns();
+                return View(model);
             }
 
-            // Remove navigation properties from ModelState validation
-            ModelState.Remove("Category");
-            ModelState.Remove("Subject");
-            ModelState.Remove("StudySessions");
-           
+            var task = await _context.StudyTasks.FindAsync(model.Id);
+            if (task == null) return NotFound();
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(studyTask);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StudyTaskExists(studyTask.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", studyTask.CategoryId);
-            ViewBag.SubjectId = new SelectList(_context.Subjects, "Id", "Name", studyTask.SubjectId);
-            return View(studyTask);
+            task.Title = model.Title;
+            task.Description = model.Description;
+            task.DueDate = model.DueDate;
+            task.Priority = model.Priority;
+            task.Status = model.Status;
+            task.CategoryId = model.CategoryId;
+            task.SubjectId = model.SubjectId;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: StudyTask/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var model = await _context.StudyTasks
+                .AsNoTracking()
+                .Where(t => t.Id == id)
+                .Select(t => new StudyTaskViewModel
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    Description = t.Description,
+                    Priority = t.Priority.ToString(),
+                    Status = t.Status.ToString(),
+                    Category = t.Category.Name,
+                    Subject = t.Subject.Name
+                })
+                .FirstOrDefaultAsync();
 
-            var studyTask = await _context.StudyTasks
-                .Include(s => s.Category)
-                .Include(s => s.Subject)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (studyTask == null)
-            {
-                return NotFound();
-            }
+            if (model == null) return NotFound();
 
-            return View(studyTask);
+            return View(model);
         }
 
         // POST: StudyTask/Delete/5
@@ -164,19 +188,19 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var studyTask = await _context.StudyTasks.FindAsync(id);
-            if (studyTask != null)
-            {
-                _context.StudyTasks.Remove(studyTask);
-            }
+            var task = await _context.StudyTasks.FindAsync(id);
+            if (task == null) return NotFound();
 
+            _context.StudyTasks.Remove(task);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StudyTaskExists(int id)
+        private void LoadDropdowns()
         {
-            return _context.StudyTasks.Any(e => e.Id == id);
+            ViewBag.CategoryId = new SelectList(_context.Categories.AsNoTracking(), "Id", "Name");
+            ViewBag.SubjectId = new SelectList(_context.Subjects.AsNoTracking(), "Id", "Name");
         }
     }
 }

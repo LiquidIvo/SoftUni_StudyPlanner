@@ -13,7 +13,6 @@ namespace StudyPlanner.Models
         public int Id { get; set; }
 
         [Required]
-        [MinLength(StudyTaskTitleMinLength)]
         [MaxLength(StudyTaskTitleMaxLength)]
         public string Title { get; set; } = null!;
 
@@ -31,15 +30,12 @@ namespace StudyPlanner.Models
         public Enums.TaskStatus Status { get; set; }
 
 
-        [Required(ErrorMessage = "Category is required")]
-        [DisplayName("Category")]
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; } = null!;
 
 
-        [Required(ErrorMessage = "Subject is required")]
-        [DisplayName("Subject")]
+        
         [ForeignKey(nameof(Subject))]
         public int SubjectId { get; set; }
         public virtual Subject Subject { get; set; } = null!;
