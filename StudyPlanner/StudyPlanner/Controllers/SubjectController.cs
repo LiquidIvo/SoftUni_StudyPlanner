@@ -125,12 +125,29 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var subject = await _context.Subjects.FindAsync(id);
-            if (subject != null)
+            Subject? subject = await _context.Subjects
+            .Include(c => c.StudyTasks)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (subject == null)
             {
-                _context.Subjects.Remove(subject);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
+
+            if (subject.StudyTasks.Any())
+            {
+                ViewData["ErrorMessage"] = "Cannot delete this subject because it has associated study tasks.";
+
+                var viewModel = new SubjectViewModel
+                {
+                    Id = subject.Id,
+                    Name = subject.Name
+                };
+                return View("Delete",viewModel);
+            }
+                
+            _context.Subjects.Remove(subject);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

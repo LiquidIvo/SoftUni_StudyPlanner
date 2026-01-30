@@ -128,11 +128,31 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            
-            var category = new Category { Id = id };
-            _context.Categories.Attach(category);
-            _context.Categories.Remove(category);
 
+            Category? category = await _context.Categories
+            .Include(c => c.StudyTasks)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null)
+            {
+              return NotFound();
+            }
+
+            if (category.StudyTasks.Any())
+            {
+                ViewData["ErrorMessage"] = "Cannot delete this category because it has associated study tasks.";
+
+                var categoryViewModel = new CategoryViewModel
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    Color = category.Color
+                };
+
+                return View("Delete",categoryViewModel);
+            }
+
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
