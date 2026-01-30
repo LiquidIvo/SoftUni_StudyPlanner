@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
 using StudyPlanner.Models;
 using StudyPlanner.ViewModels.StudySession;
+using StudyPlanner.ViewModels.StudyTask;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,30 @@ namespace StudyPlanner.Controllers
             _context = context;
         }
 
-      
 
-       
+        public async Task<IActionResult> Details(int id)
+        {
+            var model = await _context.StudySessions
+                .AsNoTracking()
+                .Where(s => s.Id == id)
+                .Select(s => new StudySessionViewModel
+                {
+                    Id = s.Id,
+                    StudyTaskId = s.StudyTaskId,
+                    StartTime = s.StartTime,
+                    EndTime = s.EndTime,
+                    Notes = s.Notes
+                    
+                    
+                })
+                .FirstOrDefaultAsync();
+
+            if (model == null)
+                return NotFound();
+
+            return View(model);
+        }
+
 
         // GET: StudySession/Create
         public async Task<IActionResult> Create(int studyTaskId)
@@ -116,7 +138,7 @@ namespace StudyPlanner.Controllers
             var model = await _context.StudySessions
                 .AsNoTracking()
                 .Where(s => s.Id == id)
-                .Select(s => new StudySessionDeleteViewModel
+                .Select(s => new StudySessionViewModel
                 {
                     Id = s.Id,
                     StudyTaskId = s.StudyTaskId,

@@ -1,6 +1,6 @@
 ﻿namespace StudyPlanner.ViewModels.StudySession
 {
-    public class StudySessionDeleteViewModel
+    public class StudySessionViewModel
     {
         public int Id { get; set; }
         public int StudyTaskId { get; set; }
