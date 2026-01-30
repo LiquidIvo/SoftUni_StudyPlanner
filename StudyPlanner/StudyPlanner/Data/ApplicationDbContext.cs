@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Models;
+using System.Reflection.Emit;
 namespace StudyPlanner.Data
 {
     public class ApplicationDbContext : IdentityDbContext
@@ -14,5 +15,29 @@ namespace StudyPlanner.Data
         public virtual DbSet<StudyTask> StudyTasks { get; set; } = null!;
         public virtual DbSet<StudySession> StudySessions { get; set; } = null!;
 
+
+        override protected void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+
+            builder.Entity<StudyTask>()
+            .HasOne(t => t.Category)
+            .WithMany(c => c.StudyTasks)
+            .HasForeignKey(t => t.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<StudyTask>()
+                .HasOne(t => t.Subject)
+                .WithMany(s => s.StudyTasks)
+                .HasForeignKey(t => t.SubjectId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<StudySession>()
+                .HasOne(s => s.StudyTask)
+                .WithMany(t => t.StudySessions)
+                .HasForeignKey(s => s.StudyTaskId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }
