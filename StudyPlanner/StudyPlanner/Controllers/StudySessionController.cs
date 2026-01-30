@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
 using StudyPlanner.Models;
+using StudyPlanner.ViewModels.StudySession;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace StudyPlanner.Controllers
 {
@@ -24,16 +25,20 @@ namespace StudyPlanner.Controllers
        
 
         // GET: StudySession/Create
-        public IActionResult Create(int studyTaskId)
+        public async Task<IActionResult> Create(int studyTaskId)
         {
+            var taskExists = await _context.StudyTasks
+               .AsNoTracking()
+               .AnyAsync(t => t.Id == studyTaskId);
 
-            var task = _context.StudyTasks.Find(studyTaskId);
-            if (task == null) return NotFound();
+            if (!taskExists) return NotFound();
 
-            
-            ViewBag.StudyTaskId = studyTaskId;
-            ViewBag.StudyTaskTitle = task.Title; 
-            return View();
+            var model = new StudySessionCreateInputModel
+            {
+                StudyTaskId = studyTaskId
+            };
+
+            return View(model);
         }
 
         // POST: StudySession/Create
@@ -41,83 +46,88 @@ namespace StudyPlanner.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int studyTaskId,[Bind("StartTime,EndTime,Notes")] StudySession studySession)
+        public async Task<IActionResult> Create(StudySessionCreateInputModel input)
         {
-            studySession.StudyTaskId = studyTaskId;
-            ModelState.Remove("StudyTask");
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(studySession);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(
-                    "Details",
-                    "StudyTask",
-                    new { id = studyTaskId });
+                return View(input);
             }
 
-            ViewBag.StudyTaskId = studyTaskId;
-            return View(studySession);
+            var session = new StudySession
+            {
+                StudyTaskId = input.StudyTaskId,
+                StartTime = input.StartTime,
+                EndTime = input.EndTime,
+                Notes = input.Notes
+            };
+
+            _context.StudySessions.Add(session);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "StudyTask", new { id = input.StudyTaskId });
         }
 
         // GET
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
+            var session = await _context.StudySessions
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == id);
 
-            var studySession = await _context.StudySessions.FindAsync(id);
-            if (studySession == null) return NotFound();
+            if (session == null) return NotFound();
 
-            ViewBag.StudyTaskId = studySession.StudyTaskId;
-            var task = await _context.StudyTasks.FindAsync(studySession.StudyTaskId);
-            ViewBag.StudyTaskTitle = task?.Title;
+            var model = new StudySessionEditInputModel
+            {
+                Id = session.Id,
+                StudyTaskId = session.StudyTaskId,
+                StartTime = session.StartTime,
+                EndTime = session.EndTime,
+                Notes = session.Notes
+            };
 
-            return View(studySession);
+            return View(model);
         }
 
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StartTime,EndTime,Notes")] StudySession studySession)
+        public async Task<IActionResult> Edit(StudySessionEditInputModel input)
         {
-            if (id != studySession.Id) return NotFound();
-            ModelState.Remove("StudyTask");
-            var existingSession = await _context.StudySessions.FindAsync(id);
-            if (existingSession == null) return NotFound();
-
-            existingSession.StartTime = studySession.StartTime;
-            existingSession.EndTime = studySession.EndTime;
-            existingSession.Notes = studySession.Notes;
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "StudyTask", new { id = existingSession.StudyTaskId });
+                return View(input);
             }
 
-            ViewBag.StudyTaskId = existingSession.StudyTaskId;
-            return View(existingSession);
+            var session = await _context.StudySessions.FindAsync(input.Id);
+            if (session == null) return NotFound();
+
+            session.StartTime = input.StartTime;
+            session.EndTime = input.EndTime;
+            session.Notes = input.Notes;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", "StudyTask", new { id = session.StudyTaskId });
         }
 
 
         // GET: StudySession/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var model = await _context.StudySessions
+                .AsNoTracking()
+                .Where(s => s.Id == id)
+                .Select(s => new StudySessionDeleteViewModel
+                {
+                    Id = s.Id,
+                    StudyTaskId = s.StudyTaskId,
+                    StartTime = s.StartTime,
+                    EndTime = s.EndTime,
+                    Notes = s.Notes
+                })
+                .FirstOrDefaultAsync();
 
-            var studySession = await _context.StudySessions
-                .Include(s => s.StudyTask)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (studySession == null)
-            {
-                return NotFound();
-            }
-
-            return View(studySession);
+            if (model == null) return NotFound();
+            return View(model);
         }
 
         // POST: StudySession/Delete/5
@@ -125,26 +135,18 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var studySession = await _context.StudySessions.FindAsync(id);
-            if (studySession == null)
-            {
-                return NotFound();
-            }
+            var session = await _context.StudySessions
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == id);
 
-            int studyTaskId = studySession.StudyTaskId;
+            if (session == null) return NotFound();
 
-            _context.StudySessions.Remove(studySession);
+            _context.StudySessions.Remove(new StudySession { Id = id });
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(
-        "Details",
-        "StudyTask",
-         new { id = studyTaskId });
+            return RedirectToAction("Details", "StudyTask", new { id = session.StudyTaskId });
         }
 
-        private bool StudySessionExists(int id)
-        {
-            return _context.StudySessions.Any(e => e.Id == id);
-        }
+        
     }
 }
