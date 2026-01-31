@@ -22,11 +22,11 @@ namespace StudyPlanner.ViewModels.StudyTask
         [Required]
         public Enums.TaskStatus Status { get; set; }
 
-        [Required(ErrorMessage = "Category is required")]
+        [Required(ErrorMessage = "Category field is required")]
         [Display(Name = "Category")]
         public int CategoryId { get; set; }
 
-        [Required(ErrorMessage = "Subject is required")]
+        [Required(ErrorMessage = "Subject field is required")]
         [Display(Name = "Subject")]
         public int SubjectId { get; set; }
 

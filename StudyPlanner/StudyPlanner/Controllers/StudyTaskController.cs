@@ -35,6 +35,7 @@ namespace StudyPlanner.Controllers
                Priority = t.Priority.ToString(),
                Status = t.Status.ToString(),
                Category = t.Category.Name,
+               CategoryColor = t.Category.Color,
                Subject = t.Subject.Name
            })
            .ToListAsync();
@@ -57,6 +58,7 @@ namespace StudyPlanner.Controllers
                  Priority = t.Priority.ToString(),
                  Status = t.Status.ToString(),
                  Category = t.Category.Name,
+                 CategoryColor = t.Category.Color,
                  Subject = t.Subject.Name,
                  StudySessions = t.StudySessions
                      .Select(s => new StudySessionItemViewModel

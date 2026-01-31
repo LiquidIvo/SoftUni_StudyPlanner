@@ -1,26 +1,35 @@
 ﻿@model StudyPlanner.ViewModels.StudyTask.StudyTaskCreateModel
+
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Task";
 }
 
-<h1>Create</h1>
-<h4>StudyTask</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @await Html.PartialAsync("_StudyTaskForm", Model)
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
 
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <h3 class="mb-3">➕ Create Study Task</h3>
+                <hr />
+
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    @await Html.PartialAsync("_StudyTaskForm", Model)
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            ← Back
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            Create
+                        </button>
+                    </div>
+                </form>
+
             </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

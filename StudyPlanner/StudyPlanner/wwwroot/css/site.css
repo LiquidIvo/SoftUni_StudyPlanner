@@ -20,3 +20,24 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.wrap-text {
+    white-space: normal;
+    word-break: break-word;
+    max-width: 300px;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 0.4em 0.6em;
+}
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
