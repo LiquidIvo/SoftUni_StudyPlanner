@@ -14,5 +14,7 @@
 
         public string CategoryColor { get; set; } = null!;
         public string Subject { get; set; } = null!;
+
+        public string SubjectColor { get; set; } = null!;
     }
 }

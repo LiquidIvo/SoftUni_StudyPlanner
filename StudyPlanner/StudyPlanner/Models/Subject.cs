@@ -9,10 +9,12 @@ namespace StudyPlanner.Models
         public int Id { get; set; }
 
         [Required]
-        [MinLength(SubjectNameMinLength)]
         [MaxLength(SubjectNameMaxLength)]
         public string Name { get; set; } = null!;
 
+        [Required]
+        [MaxLength(CategoryColorLength)]
+        public string Color { get; set; } = null!;
         public virtual ICollection<StudyTask> StudyTasks { get; set; } = new HashSet<StudyTask>();
     }
 

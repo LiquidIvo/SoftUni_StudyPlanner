@@ -1,4 +1,6 @@
-﻿namespace StudyPlanner.ViewModels.StudyTask
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace StudyPlanner.ViewModels.StudyTask
 {
     public class StudyTaskDetailsViewModel
     {
@@ -13,7 +15,7 @@
         public string Category { get; set; } = null!;
         public string CategoryColor { get; set; } = null!;
         public string Subject { get; set; } = null!;
-
+        public string SubjectColor { get; set; } = null!;
         public IEnumerable<StudySessionItemViewModel> StudySessions { get; set; }
             = new List<StudySessionItemViewModel>();
     }

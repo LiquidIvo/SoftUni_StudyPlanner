@@ -28,7 +28,8 @@ namespace StudyPlanner.Controllers
                .Select(s => new SubjectViewModel
                {
                    Id = s.Id,
-                   Name = s.Name
+                   Name = s.Name,
+                   Color = s.Color
                })
                .ToListAsync();
 
@@ -56,7 +57,9 @@ namespace StudyPlanner.Controllers
 
             var subject = new Subject
             {
-                Name = input.Name
+                Name = input.Name,
+                Color = input.Color
+
             };
 
             _context.Subjects.Add(subject);
@@ -76,7 +79,8 @@ namespace StudyPlanner.Controllers
             var model = new SubjectEditInputModel
             {
                 Id = subject.Id,
-                Name = subject.Name
+                Name = subject.Name,
+                Color = subject.Color
             };
 
             return View(model);
@@ -95,6 +99,7 @@ namespace StudyPlanner.Controllers
             if (subject == null) return NotFound();
 
             subject.Name = input.Name;
+            subject.Color = input.Color;
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
@@ -111,7 +116,8 @@ namespace StudyPlanner.Controllers
                 .Select(s => new SubjectViewModel
                 {
                     Id = s.Id,
-                    Name = s.Name
+                    Name = s.Name,
+                    Color = s.Color
                 })
                 .FirstOrDefaultAsync();
 
@@ -141,7 +147,8 @@ namespace StudyPlanner.Controllers
                 var viewModel = new SubjectViewModel
                 {
                     Id = subject.Id,
-                    Name = subject.Name
+                    Name = subject.Name,
+                    Color = subject.Color
                 };
                 return View("Delete",viewModel);
             }

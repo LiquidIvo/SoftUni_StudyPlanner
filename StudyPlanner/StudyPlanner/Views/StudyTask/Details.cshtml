@@ -39,13 +39,16 @@
 
             <dt class="col-sm-3">Category</dt>
             <dd class="col-sm-9">
-                <span class="badge" style="background-color:@Model.CategoryColor; color:white;">
+                <span class="badge" style="background-color:@Model.CategoryColor; color:white; white-space: normal; word-wrap: break-word;">
                     @Model.Category
                 </span>
             </dd>
-
             <dt class="col-sm-3">Subject</dt>
-            <dd class="col-sm-9">@Model.Subject</dd>
+            <dd class="col-sm-9">
+                <span class="badge" style="background-color:@Model.SubjectColor; color:white; white-space: normal; word-wrap: break-word;">
+                    @Model.Subject
+                </span>
+            </dd>
         </dl>
 
         <div class="mt-3">
