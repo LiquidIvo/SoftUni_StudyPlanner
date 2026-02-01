@@ -2,7 +2,67 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="text-center py-5">
+        <h1 class="display-4">📚 Welcome to StudyPlanner</h1>
+        <p class="lead">Your personal study task manager and session tracker</p>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h2 class="h1 mb-3">📝</h2>
+                    <h5 class="card-title">Manage Tasks</h5>
+                    <p class="card-text">Create and organize your study tasks with priorities, due dates, and categories.</p>
+                    <a asp-controller="StudyTask" asp-action="Index" class="btn btn-primary">View Tasks</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h2 class="h1 mb-3">🏷️</h2>
+                    <h5 class="card-title">Organize</h5>
+                    <p class="card-text">Use color-coded categories and subjects to keep your tasks organized and easy to find.</p>
+                    <a asp-controller="Category" asp-action="Index" class="btn btn-primary">Manage Categories</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h2 class="h1 mb-3">⏱️</h2>
+                    <h5 class="card-title">Track Sessions</h5>
+                    <p class="card-text">Log your study sessions and track how much time you spend on each task.</p>
+                    <a asp-controller="StudyTask" asp-action="Create" class="btn btn-primary">Create Task</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">🚀 Getting Started</h4>
+                    <ol class="mt-3">
+                        <li class="mb-2"><strong>Create Categories:</strong> Set up categories like "Homework", "Exam Prep", or "Projects" with custom colors.</li>
+                        <li class="mb-2"><strong>Add Subjects:</strong> Define your subjects such as "Mathematics", "History", or "Science".</li>
+                        <li class="mb-2"><strong>Create Tasks:</strong> Add study tasks with descriptions, due dates, priorities, and assign them to categories and subjects.</li>
+                        <li class="mb-2"><strong>Track Sessions:</strong> Log your study sessions with start/end times and notes to monitor your progress.</li>
+                        <li><strong>Stay Organized:</strong> Mark tasks as completed and review your study history to stay on track!</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5 mb-5">
+        <a asp-controller="StudyTask" asp-action="Index" class="btn btn-success btn-lg">
+            Get Started Now →
+        </a>
+    </div>
 </div>
