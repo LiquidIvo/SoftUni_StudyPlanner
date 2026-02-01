@@ -181,7 +181,9 @@ namespace StudyPlanner.Controllers
                     Category = t.Category.Name,
                     CategoryColor = t.Category.Color,
                     Subject = t.Subject.Name,
-                    SubjectColor = t.Subject.Color
+                    SubjectColor = t.Subject.Color,
+                    DueDate = t.DueDate
+
                 })
                 .FirstOrDefaultAsync();
 

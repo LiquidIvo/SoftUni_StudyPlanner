@@ -1,18 +1,32 @@
 ﻿@model StudyPlanner.ViewModels.StudySession.StudySessionCreateInputModel
+@{
+    ViewData["Title"] = "Create Study Session";
+}
 
-<h1>Create Session</h1>
-
-<form asp-action="Create">
-    @await Html.PartialAsync("_StudySessionForm", Model)
-    <div class="form-group mt-2">
-        <input type="submit" value="Create" class="btn btn-primary" />
-        <a asp-controller="StudyTask" asp-action="Details" asp-route-id="@Model.StudyTaskId" class="btn btn-secondary">Back</a>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="mb-3">➕ Create Study Session</h3>
+                <hr />
+                <form asp-action="Create">
+                    @await Html.PartialAsync("_StudySessionForm", Model)
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-controller="StudyTask" asp-action="Details" asp-route-id="@Model.StudyTaskId" class="btn btn-outline-secondary">
+                            ← Back
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            Create
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</form>
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

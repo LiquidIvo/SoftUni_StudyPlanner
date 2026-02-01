@@ -1,23 +1,26 @@
 ﻿@model StudyPlanner.ViewModels.StudySession.StudySessionBaseModel
 
 <input type="hidden" asp-for="StudyTaskId" />
-
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<div class="form-group">
-    <label asp-for="StartTime" class="control-label"></label>
-    <input asp-for="StartTime" type="datetime-local" class="form-control" />
+<div class="mb-3">
+    <label asp-for="StartTime" class="form-label"></label>
+    <input asp-for="StartTime"
+           type="datetime-local"
+           class="form-control"
+           value="@(Model.StartTime == default(DateTime) ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm") : Model.StartTime.ToString("yyyy-MM-ddTHH:mm"))" />
     <span asp-validation-for="StartTime" class="text-danger"></span>
 </div>
-
-<div class="form-group">
-    <label asp-for="EndTime" class="control-label"></label>
-    <input asp-for="EndTime" type="datetime-local" class="form-control" />
+<div class="mb-3">
+    <label asp-for="EndTime" class="form-label"></label>
+    <input asp-for="EndTime"
+           type="datetime-local"
+           class="form-control"
+           value="@(Model.EndTime == default(DateTime) ? DateTime.Now.AddHours(1).ToString("yyyy-MM-ddTHH:mm") : Model.EndTime.ToString("yyyy-MM-ddTHH:mm"))" />
     <span asp-validation-for="EndTime" class="text-danger"></span>
 </div>
-
-<div class="form-group">
-    <label asp-for="Notes" class="control-label"></label>
-    <textarea asp-for="Notes" class="form-control"></textarea>
+<div class="mb-3">
+    <label asp-for="Notes" class="form-label"></label>
+    <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
     <span asp-validation-for="Notes" class="text-danger"></span>
 </div>

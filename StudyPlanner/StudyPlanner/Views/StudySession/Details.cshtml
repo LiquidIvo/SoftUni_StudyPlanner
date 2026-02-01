@@ -1,24 +1,46 @@
 ﻿@model StudyPlanner.ViewModels.StudySession.StudySessionViewModel
+@{
+    ViewData["Title"] = "Study Session Details";
+}
 
-<h2>Study Session Notes</h2>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="mb-3">📝 Study Session Details</h3>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-3">Start Time</dt>
+                    <dd class="col-sm-9">@Model.StartTime.ToString("dd MMM yyyy HH:mm")</dd>
 
-<div class="card">
-    <div class="card-body">
-        <p><strong>Start:</strong> @Model.StartTime</p>
-        <p><strong>End:</strong> @Model.EndTime</p>
+                    <dt class="col-sm-3">End Time</dt>
+                    <dd class="col-sm-9">@Model.EndTime.ToString("dd MMM yyyy HH:mm")</dd>
 
-        <hr />
+                    <dt class="col-sm-3">Duration</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge bg-info">
+                            @((Model.EndTime - Model.StartTime).TotalMinutes.ToString("0")) minutes
+                        </span>
+                    </dd>
 
-        <h5>Notes</h5>
-        <p style="white-space: pre-wrap;">
-            @(string.IsNullOrWhiteSpace(Model.Notes) ? "No notes." : Model.Notes)
-        </p>
+                    <dt class="col-sm-3">Notes</dt>
+                    <dd class="col-sm-9" style="white-space: pre-wrap;">@(string.IsNullOrWhiteSpace(Model.Notes) ? "No notes" : Model.Notes)</dd>
+                </dl>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-controller="StudyTask" asp-action="Details" asp-route-id="@Model.StudyTaskId" class="btn btn-secondary">
+                        ← Back to Task
+                    </a>
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                            Edit
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
-<a asp-controller="StudyTask"
-   asp-action="Details"
-   asp-route-id="@Model.StudyTaskId"
-   class="btn btn-secondary mt-3">
-    Back to task
-</a>
