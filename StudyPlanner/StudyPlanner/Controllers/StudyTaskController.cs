@@ -179,7 +179,9 @@ namespace StudyPlanner.Controllers
                     Priority = t.Priority.ToString(),
                     Status = t.Status.ToString(),
                     Category = t.Category.Name,
-                    Subject = t.Subject.Name
+                    CategoryColor = t.Category.Color,
+                    Subject = t.Subject.Name,
+                    SubjectColor = t.Subject.Color
                 })
                 .FirstOrDefaultAsync();
 

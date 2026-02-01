@@ -27,47 +27,39 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-
                         <td style="max-width: 180px; word-wrap: break-word; overflow-wrap: break-word;">
-                            <div style="max-height: 4.5em; overflow: hidden; white-space: pre-wrap;">@item.Title</div>
+                            <div style="max-height: 4.5em; overflow: hidden; white-space: normal;">@item.Title</div>
                         </td>
-
                         <td style="max-width: 300px; word-wrap: break-word; overflow-wrap: break-word;">
                             <div style="max-height: 4.5em; overflow: hidden; white-space: normal;">
                                 @item.Description
                             </div>
                         </td>
-
                         <td>
                             @item.DueDate.ToString("dd MMM yyyy")
                         </td>
-
                         <td>
                             <span class="badge bg-warning text-dark">
                                 @item.Priority
                             </span>
                         </td>
-
                         <td>
                             <span class="badge @(item.Status == "Completed" ? "bg-success" :
-                               item.Status == "InProgress" ? "bg-info" :
-                               "bg-secondary")">
+                                                                 item.Status == "InProgress" ? "bg-info" :
+                                                                 "bg-secondary")">
                                 @item.Status
                             </span>
                         </td>
-
                         <td style="max-width: 120px;">
                             <span class="badge d-inline-block text-wrap" style="background-color:@item.CategoryColor; color:#fff; max-width: 100%;">
                                 @item.Category
                             </span>
                         </td>
-
                         <td style="max-width: 120px;">
                             <span class="badge d-inline-block text-wrap" style="background-color:@item.SubjectColor; color:#fff; max-width: 100%;">
                                 @item.Subject
                             </span>
                         </td>
-
                         <td class="text-end text-nowrap">
                             <a asp-action="Details" asp-route-id="@item.Id"
                                class="btn btn-sm btn-outline-primary">
