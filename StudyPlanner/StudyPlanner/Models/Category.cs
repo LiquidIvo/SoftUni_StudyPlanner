@@ -9,7 +9,6 @@ namespace StudyPlanner.Models
         public int Id { get; set; }
 
         [Required]
-        [MinLength(CategoryNameMinLength)]
         [MaxLength(CategoryNameMaxLength)]
         public string Name { get; set; } = null!;
 

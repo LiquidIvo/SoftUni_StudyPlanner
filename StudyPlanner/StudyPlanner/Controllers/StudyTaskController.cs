@@ -91,6 +91,18 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(StudyTaskCreateModel model)
         {
+            bool invalidCategory = !await _context.Categories.AnyAsync(c => c.Id == model.CategoryId);
+            bool invalidSubject = !await _context.Subjects.AnyAsync(s => s.Id == model.SubjectId);
+
+            if (invalidCategory || invalidSubject)
+            {
+                if (invalidCategory)
+                    ModelState.AddModelError(nameof(model.CategoryId), "Invalid category selected");
+
+                if (invalidSubject)
+                    ModelState.AddModelError(nameof(model.SubjectId), "Invalid subject selected");
+            }
+
             if (!ModelState.IsValid)
             {
                 LoadDropdowns();
@@ -144,6 +156,18 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(StudyTaskEditModel model)
         {
+            bool invalidCategory = !await _context.Categories.AnyAsync(c => c.Id == model.CategoryId);
+            bool invalidSubject = !await _context.Subjects.AnyAsync(s => s.Id == model.SubjectId);
+
+            if (invalidCategory || invalidSubject)
+            {
+                if (invalidCategory)
+                    ModelState.AddModelError(nameof(model.CategoryId), "Invalid category selected");
+
+                if (invalidSubject)
+                    ModelState.AddModelError(nameof(model.SubjectId), "Invalid subject selected");
+            }
+
             if (!ModelState.IsValid)
             {
                 LoadDropdowns();
