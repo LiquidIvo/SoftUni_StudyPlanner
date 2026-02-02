@@ -15,6 +15,7 @@ namespace StudyPlanner.ViewModels.StudyTask
 
         [Required]
         [DataType(DataType.Date)]
+        [Display(Name = "Due Date")]
         public DateTime DueDate { get; set; }
 
         [Required]
