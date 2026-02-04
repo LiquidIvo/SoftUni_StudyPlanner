@@ -1,4 +1,6 @@
-﻿using StudyPlanner.Common;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
+using StudyPlanner.Common;
 using StudyPlanner.Enums;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -39,6 +41,11 @@ namespace StudyPlanner.Models
         [ForeignKey(nameof(Subject))]
         public int SubjectId { get; set; }
         public virtual Subject Subject { get; set; } = null!;
+
+        [Required]
+        [ForeignKey(nameof(User))]
+        public string UserId { get; set; } = null!;
+        public virtual IdentityUser User { get; set; } = null!;
 
         public virtual ICollection<StudySession> StudySessions { get; set; } = new HashSet<StudySession>();
     }

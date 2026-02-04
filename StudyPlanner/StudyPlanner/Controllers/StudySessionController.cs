@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace StudyPlanner.Controllers
 {
+    [Authorize]
     public class StudySessionController : Controller
     {
         private readonly ApplicationDbContext _context;

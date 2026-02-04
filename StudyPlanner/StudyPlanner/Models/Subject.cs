@@ -1,5 +1,8 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static StudyPlanner.Common.EntityValidation;
 namespace StudyPlanner.Models
 {
@@ -15,6 +18,11 @@ namespace StudyPlanner.Models
         [Required]
         [MaxLength(CategoryColorLength)]
         public string Color { get; set; } = null!;
+
+        [Required]
+        [ForeignKey(nameof(User))]
+        public string UserId { get; set; } = null!;
+        public virtual IdentityUser User { get; set; } = null!;
         public virtual ICollection<StudyTask> StudyTasks { get; set; } = new HashSet<StudyTask>();
     }
 

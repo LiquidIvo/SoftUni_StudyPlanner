@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Build.Execution;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Models;
 using System.Reflection.Emit;
@@ -38,6 +40,13 @@ namespace StudyPlanner.Data
                 .WithMany(t => t.StudySessions)
                 .HasForeignKey(s => s.StudyTaskId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<StudySession>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

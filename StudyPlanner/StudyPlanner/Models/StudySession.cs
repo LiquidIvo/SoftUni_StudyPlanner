@@ -1,6 +1,8 @@
-﻿using static StudyPlanner.Common.EntityValidation;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static StudyPlanner.Common.EntityValidation;
 
 namespace StudyPlanner.Models
 {
@@ -22,5 +24,10 @@ namespace StudyPlanner.Models
 
         [MaxLength(StudySessionNotesMaxLength)]
         public string? Notes { get; set; }
+
+        [Required]
+        [ForeignKey(nameof(User))]
+        public string UserId { get; set; } = null!;
+        public virtual IdentityUser User { get; set; } = null!;
     }
 }
