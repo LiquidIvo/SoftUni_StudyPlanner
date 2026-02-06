@@ -18,7 +18,9 @@
                     <dd class="col-sm-9">@Model.DueDate.ToString("dd MMM yyyy")</dd>
                     <dt class="col-sm-3">Priority</dt>
                     <dd class="col-sm-9">
-                        <span class="badge bg-warning text-dark">
+                        <span class="badge @(Model.Priority == "High" ? "bg-danger" :
+                                                     Model.Priority == "Medium" ? "bg-warning text-dark" :
+                                                    "bg-secondary")">
                             @Model.Priority
                         </span>
                     </dd>

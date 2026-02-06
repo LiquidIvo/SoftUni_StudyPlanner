@@ -39,7 +39,9 @@
                             @item.DueDate.ToString("dd MMM yyyy")
                         </td>
                         <td>
-                            <span class="badge bg-warning text-dark">
+                            <span class="badge @(item.Priority == "High" ? "bg-danger" :
+                                                        item.Priority == "Medium" ? "bg-warning text-dark" :
+                                                        "bg-secondary")">
                                 @item.Priority
                             </span>
                         </td>

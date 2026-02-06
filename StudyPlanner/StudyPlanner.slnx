@@ -1,3 +1,14 @@
 <Solution>
-  <Project Path="StudyPlanner/StudyPlanner.csproj" />
+  <Folder Name="/Data/">
+    <Project Path="StudyPlanner.Data.Models/StudyPlanner.Data.Models.csproj" Id="5b40c4d3-4cdc-4e8b-9da1-87a5fb7acc05" />
+    <Project Path="StudyPlanner.Data/StudyPlanner.Data.csproj" Id="18c09d03-5156-4fdb-9a72-19ad6138254c" />
+  </Folder>
+  <Folder Name="/Services/">
+    <Project Path="StudyPlanner.Services/StudyPlanner.Services.Core.csproj" Id="e7d4f830-ad64-4ef3-b69a-fc88a3d0907c" />
+  </Folder>
+  <Folder Name="/Web/">
+    <Project Path="StudyPlanner.ViewModels/StudyPlanner.ViewModels.csproj" Id="6285d977-8060-4e11-913c-73d9e6a5dd75" />
+    <Project Path="StudyPlanner/StudyPlanner.csproj" />
+  </Folder>
+  <Project Path="StudyPlanner.GCommon/StudyPlanner.GCommon.csproj" Id="be6e732f-5a5e-496b-ac2e-4c0ac4a96d30" />
 </Solution>

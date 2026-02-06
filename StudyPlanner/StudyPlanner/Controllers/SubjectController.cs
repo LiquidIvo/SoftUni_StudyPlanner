@@ -1,45 +1,35 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using StudyPlanner.Data;
-using StudyPlanner.Models;
+using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Services;
 using StudyPlanner.ViewModels.Subject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace StudyPlanner.Controllers
 {
     [Authorize]
     public class SubjectController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ISubjectService _subjectService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public SubjectController(ApplicationDbContext context)
+        public SubjectController(ISubjectService subjectService, UserManager<IdentityUser> userManager)
         {
-            _context = context;
+            _subjectService = subjectService;
+            _userManager = userManager;
         }
 
         // GET: Subject
         public async Task<IActionResult> Index()
         {
-            var subjects = await _context.Subjects
-               .AsNoTracking()
-               .Select(s => new SubjectViewModel
-               {
-                   Id = s.Id,
-                   Name = s.Name,
-                   Color = s.Color
-               })
-               .ToListAsync();
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
+            var subjects = await _subjectService.GetAllSubjectsAsync(userId);
             return View(subjects);
         }
-
-        // GET: Subject/Details/5
-       
 
         // GET: Subject/Create
         public IActionResult Create()
@@ -48,8 +38,6 @@ namespace StudyPlanner.Controllers
         }
 
         // POST: Subject/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SubjectCreateInputModel input)
@@ -57,75 +45,100 @@ namespace StudyPlanner.Controllers
             if (!ModelState.IsValid)
                 return View(input);
 
-            var subject = new Subject
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            try
             {
-                Name = input.Name,
-                Color = input.Color
-
-            };
-
-            _context.Subjects.Add(subject);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+                await _subjectService.CreateSubjectAsync(input, userId);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while creating the subject.");
+                return View(input);
+            }
         }
 
         // GET: Subject/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            var subject = await _context.Subjects.FindAsync(id);
-            if (subject == null) return NotFound();
-
-            var model = new SubjectEditInputModel
+            try
             {
-                Id = subject.Id,
-                Name = subject.Name,
-                Color = subject.Color
-            };
+                var subject = await _subjectService.GetSubjectByIdAsync(id, userId);
 
-            return View(model);
+                var model = new SubjectEditInputModel
+                {
+                    Id = subject.Id,
+                    Name = subject.Name,
+                    Color = subject.Color
+                };
+
+                return View(model);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         // POST: Subject/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(SubjectEditInputModel input)
         {
-            if (!ModelState.IsValid) return View(input);
+            if (!ModelState.IsValid)
+                return View(input);
 
-            var subject = await _context.Subjects.FindAsync(input.Id);
-            if (subject == null) return NotFound();
 
-            subject.Name = input.Name;
-            subject.Color = input.Color;
-            await _context.SaveChangesAsync();
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _subjectService.UpdateSubjectAsync(input, userId);  
+                return RedirectToAction(nameof(Index));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         // GET: Subject/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null) return NotFound();
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            var model = await _context.Subjects
-                .AsNoTracking()
-                .Where(s => s.Id == id)
-                .Select(s => new SubjectViewModel
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    Color = s.Color
-                })
-                .FirstOrDefaultAsync();
-
-            if (model == null) return NotFound();
-
-            return View(model);
+            try
+            {
+                var subject = await _subjectService.GetSubjectByIdAsync(id, userId);
+                return View(subject);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         // POST: Subject/Delete/5
@@ -133,34 +146,30 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            Subject? subject = await _context.Subjects
-            .Include(c => c.StudyTasks)
-            .FirstOrDefaultAsync(c => c.Id == id);
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            if (subject == null)
+            try
+            {
+                await _subjectService.DeleteSubjectAsync(id, userId);  
+                return RedirectToAction(nameof(Index));
+            }
+            catch (InvalidOperationException ex)
+            {
+
+                var subject = await _subjectService.GetSubjectByIdAsync(id, userId);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("Delete", subject);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            if (subject.StudyTasks.Any())
+            catch (UnauthorizedAccessException)
             {
-                ViewData["ErrorMessage"] = "Cannot delete this subject because it has associated study tasks.";
-
-                var viewModel = new SubjectViewModel
-                {
-                    Id = subject.Id,
-                    Name = subject.Name,
-                    Color = subject.Color
-                };
-                return View("Delete",viewModel);
+                return Forbid();
             }
-                
-            _context.Subjects.Remove(subject);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
         }
-
-       
     }
 }

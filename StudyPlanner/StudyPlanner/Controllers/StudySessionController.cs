@@ -1,68 +1,80 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using StudyPlanner.Data;
-using StudyPlanner.Models;
+using StudyPlanner.Data.Models;
+using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.ViewModels.StudySession;
-using StudyPlanner.ViewModels.StudyTask;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StudyPlanner.Controllers
 {
     [Authorize]
     public class StudySessionController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IStudySessionService _sessionService;
+    
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public StudySessionController(ApplicationDbContext context)
+        public StudySessionController(IStudySessionService sessionService, IStudyTaskService studyTaskService, UserManager<IdentityUser> userManager)
         {
-            _context = context;
+           
+            _sessionService = sessionService;
+            _userManager = userManager;
         }
 
 
         public async Task<IActionResult> Details(int id)
         {
-            var model = await _context.StudySessions
-                .AsNoTracking()
-                .Where(s => s.Id == id)
-                .Select(s => new StudySessionViewModel
-                {
-                    Id = s.Id,
-                    StudyTaskId = s.StudyTaskId,
-                    StartTime = s.StartTime,
-                    EndTime = s.EndTime,
-                    Notes = s.Notes
-                    
-                    
-                })
-                .FirstOrDefaultAsync();
 
-            if (model == null)
+            var userId = _userManager.GetUserId(User);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            try
+            {
+                var session = await _sessionService.GetStudySessionByIdAsync(id, userId);
+
+                return View(session);
+            }
+            catch (KeyNotFoundException)
+            {
                 return NotFound();
-
-            return View(model);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
 
         // GET: StudySession/Create
         public async Task<IActionResult> Create(int studyTaskId)
         {
-            var taskExists = await _context.StudyTasks
-               .AsNoTracking()
-               .AnyAsync(t => t.Id == studyTaskId);
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            if (!taskExists) return NotFound();
-
-            var model = new StudySessionCreateInputModel
+            try
             {
-                StudyTaskId = studyTaskId
-            };
+                await _sessionService.CheckTaskOwnershipAsync(studyTaskId,userId);
+                var model = new StudySessionCreateInputModel
+                {
+                    StudyTaskId = studyTaskId
+                };
+                return View(model);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
 
-            return View(model);
+
         }
 
         // POST: StudySession/Create
@@ -77,39 +89,46 @@ namespace StudyPlanner.Controllers
                 return View(input);
             }
 
-            var session = new StudySession
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            try
             {
-                StudyTaskId = input.StudyTaskId,
-                StartTime = input.StartTime,
-                EndTime = input.EndTime,
-                Notes = input.Notes
-            };
-
-            _context.StudySessions.Add(session);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Details", "StudyTask", new { id = input.StudyTaskId });
+                
+                await _sessionService.CreateStudySessionAsync(input, input.StudyTaskId, userId);
+                return RedirectToAction("Details", "StudyTask", new { id = input.StudyTaskId });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         // GET
         public async Task<IActionResult> Edit(int id)
         {
-            var session = await _context.StudySessions
-                .AsNoTracking()
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            if (session == null) return NotFound();
-
-            var model = new StudySessionEditInputModel
+            try
             {
-                Id = session.Id,
-                StudyTaskId = session.StudyTaskId,
-                StartTime = session.StartTime,
-                EndTime = session.EndTime,
-                Notes = session.Notes
-            };
-
-            return View(model);
+                var session = await _sessionService.GetStudySessionByIdAsyncForEdit(id, userId);
+                return View(session);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         // POST
@@ -122,36 +141,46 @@ namespace StudyPlanner.Controllers
                 return View(input);
             }
 
-            var session = await _context.StudySessions.FindAsync(input.Id);
-            if (session == null) return NotFound();
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            session.StartTime = input.StartTime;
-            session.EndTime = input.EndTime;
-            session.Notes = input.Notes;
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Details", "StudyTask", new { id = session.StudyTaskId });
+            try
+            {
+                await _sessionService.UpdateStudySessionAsync(input, userId);
+                return RedirectToAction("Details", "StudyTask", new { id = input.StudyTaskId });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
 
         // GET: StudySession/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var model = await _context.StudySessions
-                .AsNoTracking()
-                .Where(s => s.Id == id)
-                .Select(s => new StudySessionViewModel
-                {
-                    Id = s.Id,
-                    StudyTaskId = s.StudyTaskId,
-                    StartTime = s.StartTime,
-                    EndTime = s.EndTime,
-                    Notes = s.Notes
-                })
-                .FirstOrDefaultAsync();
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            if (model == null) return NotFound();
-            return View(model);
+            try
+            {
+                var session = await _sessionService.GetStudySessionByIdAsync(id, userId);
+                return View(session);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         // POST: StudySession/Delete/5
@@ -159,16 +188,23 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var session = await _context.StudySessions
-                .AsNoTracking()
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            if (session == null) return NotFound();
-
-            _context.StudySessions.Remove(new StudySession { Id = id });
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Details", "StudyTask", new { id = session.StudyTaskId });
+            try
+            {
+                var studyTaskId = await _sessionService.DeleteStudySessionAsync(id, userId);
+                return RedirectToAction("Details", "StudyTask", new { id = studyTaskId });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         

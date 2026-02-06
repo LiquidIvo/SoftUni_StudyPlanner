@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using StudyPlanner.Models;
+using StudyPlanner.ViewModels;
 
 namespace StudyPlanner.Controllers
 {

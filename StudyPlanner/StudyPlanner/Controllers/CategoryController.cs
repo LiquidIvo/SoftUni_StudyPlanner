@@ -1,45 +1,42 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using StudyPlanner.Data;
-using StudyPlanner.Models;
+using StudyPlanner.Data.Models;
+using StudyPlanner.Services.Contracts;
 using StudyPlanner.ViewModels.Category;
-
+using System.Collections.Generic;
 
 namespace StudyPlanner.Controllers
 {
     [Authorize]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+       
+        private readonly ICategoryService _categoryService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryController(ICategoryService categoryService, UserManager<IdentityUser> userManager)
         {
-            _context = context;
+            _categoryService = categoryService;
+            _userManager = userManager;
         }
 
         // GET: Category
         public async Task<IActionResult> Index()
         {
-           
-            var categories = await _context.Categories
-                .AsNoTracking()
-                .Select(c => new CategoryViewModel
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Color = c.Color
-                })
-                .ToListAsync();
+            var userId = _userManager.GetUserId(User);
 
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+           
+            var categories = await _categoryService.GetAllCategoriesAsync(userId);
             return View(categories);
         }
 
         // GET: Category/Create
         public IActionResult Create()
         {
-            
             return View(new CategoryCreateInputModel());
         }
 
@@ -51,36 +48,49 @@ namespace StudyPlanner.Controllers
             if (!ModelState.IsValid)
                 return View(input);
 
-            var category = new Category
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            try
             {
-                Name = input.Name,
-                Color = input.Color
-            };
-
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+                await _categoryService.CreateCategoryAsync(input, userId);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "An error occurred while creating the category.");
+                return View(input);
+            }
         }
 
         // GET: Category/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var category = await _context.Categories
-                .AsNoTracking()
-                .Where(c => c.Id == id)
-                .Select(c => new CategoryEditInputModel
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            try
+            {
+                var category = await _categoryService.GetCategoryByIdAsync(id, userId);
+                var model = new CategoryEditInputModel
                 {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Color = c.Color
-                })
-                .FirstOrDefaultAsync();
+                    Id = category.Id,
+                    Name = category.Name,
+                    Color = category.Color
+                };
 
-            if (category == null)
+                return View(model);
+            }
+            catch (KeyNotFoundException)
+            {
                 return NotFound();
-
-            return View(category);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         // POST: Category/Edit/5
@@ -91,38 +101,45 @@ namespace StudyPlanner.Controllers
             if (!ModelState.IsValid)
                 return View(input);
 
-            var category = await _context.Categories.FindAsync(input.Id);
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            if (category == null)
+            try
+            {
+                await _categoryService.UpdateCategoryAsync(input, userId);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (KeyNotFoundException)
+            {
                 return NotFound();
-
-            
-            category.Name = input.Name;
-            category.Color = input.Color;
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         // GET: Category/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _context.Categories
-                .AsNoTracking()
-                .Where(c => c.Id == id)
-                .Select(c => new CategoryViewModel
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Color = c.Color
-                })
-                .FirstOrDefaultAsync();
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            if (category == null)
+            try
+            {
+                var category = await _categoryService.GetCategoryByIdAsync(id, userId);
+                return View(category); 
+            }
+            catch (KeyNotFoundException)
+            {
                 return NotFound();
-
-            return View(category);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         // POST: Category/Delete/5
@@ -130,36 +147,31 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            Category? category = await _context.Categories
-            .Include(c => c.StudyTasks)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (category == null)
+            try
             {
-              return NotFound();
+                
+                await _categoryService.DeleteCategoryAsync(id, userId);
+                return RedirectToAction(nameof(Index));
             }
-
-            if (category.StudyTasks.Any())
+            catch (InvalidOperationException ex)
             {
-                ViewData["ErrorMessage"] = "Cannot delete this category because it has associated study tasks.";
-
-                var categoryViewModel = new CategoryViewModel
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Color = category.Color
-                };
-
-                return View("Delete",categoryViewModel);
+               
+                var category = await _categoryService.GetCategoryByIdAsync(id, userId);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("Delete", category);
             }
-
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
-
-
     }
 }

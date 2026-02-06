@@ -1,6 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
+using StudyPlanner.Data.Repositories;
+using StudyPlanner.Data.Repositories.Interfaces;
+using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Core.Contracts;
+using StudyPlanner.Services.Core.Services;
+using StudyPlanner.Services.Services;
 
 namespace StudyPlanner
 {
@@ -20,7 +26,15 @@ namespace StudyPlanner
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ISubjectService, SubjectService>();
+            builder.Services.AddScoped<IStudyTaskService, StudyTaskService>();
+            builder.Services.AddScoped<IStudySessionService, StudySessionService>();
+
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
