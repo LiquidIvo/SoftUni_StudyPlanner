@@ -1,4 +1,5 @@
-﻿@model StudyPlanner.ViewModels.StudyTask.StudyTaskViewModel
+﻿@using static StudyPlanner.GCommon.ApplicationConstants
+@model StudyPlanner.ViewModels.StudyTask.StudyTaskViewModel
 @{
     ViewData["Title"] = "Delete Task";
 }
@@ -15,7 +16,7 @@
                     <dt class="col-sm-3">Description</dt>
                     <dd class="col-sm-9" style="white-space: pre-wrap;">@Model.Description</dd>
                     <dt class="col-sm-3">Due Date</dt>
-                    <dd class="col-sm-9">@Model.DueDate.ToString("dd MMM yyyy")</dd>
+                    <dd class="col-sm-9">@Model.DueDate.ToString(DateFormatForStudyTask)</dd>
                     <dt class="col-sm-3">Priority</dt>
                     <dd class="col-sm-9">
                         <span class="badge @(Model.Priority == "High" ? "bg-danger" :

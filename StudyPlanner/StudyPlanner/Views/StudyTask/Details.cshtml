@@ -1,4 +1,5 @@
-﻿@model StudyPlanner.ViewModels.StudyTask.StudyTaskDetailsViewModel
+﻿@using static StudyPlanner.GCommon.ApplicationConstants
+@model StudyPlanner.ViewModels.StudyTask.StudyTaskDetailsViewModel
 @{
     ViewData["Title"] = "Task Details";
 }
@@ -15,7 +16,7 @@
                     <dd class="col-sm-9" style="white-space: pre-wrap;">@Model.Description</dd>
 
                     <dt class="col-sm-3">Due Date</dt>
-                    <dd class="col-sm-9">@Model.DueDate.ToString("dd MMM yyyy")</dd>
+                    <dd class="col-sm-9">@Model.DueDate.ToString(DateFormatForStudyTask)</dd>
 
                     <dt class="col-sm-3">Priority</dt>
                     <dd class="col-sm-9">
@@ -92,8 +93,8 @@
                             @foreach (var session in Model.StudySessions)
                             {
                                 <tr>
-                                    <td>@session.StartTime.ToString("dd MMM yyyy HH:mm")</td>
-                                    <td>@session.EndTime.ToString("dd MMM yyyy HH:mm")</td>
+                                    <td>@session.StartTime.ToString(DateFormatForStudySession)</td>
+                                    <td>@session.EndTime.ToString(DateFormatForStudySession)</td>
                                     <td>
                                         <span class="badge bg-info">
                                             @((session.EndTime - session.StartTime).TotalMinutes.ToString("0")) min

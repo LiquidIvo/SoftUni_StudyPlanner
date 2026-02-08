@@ -1,4 +1,5 @@
-﻿@model StudyPlanner.ViewModels.StudySession.StudySessionViewModel
+﻿@using static StudyPlanner.GCommon.ApplicationConstants
+@model StudyPlanner.ViewModels.StudySession.StudySessionViewModel
 @{
     ViewData["Title"] = "Delete Study Session";
 }
@@ -12,10 +13,10 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3">Start Time</dt>
-                    <dd class="col-sm-9">@Model.StartTime.ToString("dd MMM yyyy HH:mm")</dd>
+                    <dd class="col-sm-9">@Model.StartTime.ToString(DateFormatForStudySession)</dd>
 
                     <dt class="col-sm-3">End Time</dt>
-                    <dd class="col-sm-9">@Model.EndTime.ToString("dd MMM yyyy HH:mm")</dd>
+                    <dd class="col-sm-9">@Model.EndTime.ToString(DateFormatForStudySession)</dd>
 
                     <dt class="col-sm-3">Notes</dt>
                     <dd class="col-sm-9" style="white-space: pre-wrap;">@(string.IsNullOrWhiteSpace(Model.Notes) ? "No notes" : Model.Notes)</dd>

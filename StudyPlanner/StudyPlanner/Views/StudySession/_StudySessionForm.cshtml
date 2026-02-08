@@ -1,4 +1,5 @@
-﻿@model StudyPlanner.ViewModels.StudySession.StudySessionInputBaseModel
+﻿@using static StudyPlanner.GCommon.ApplicationConstants
+@model StudyPlanner.ViewModels.StudySession.StudySessionInputBaseModel
 
 <input type="hidden" asp-for="StudyTaskId" />
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -8,7 +9,7 @@
     <input asp-for="StartTime"
            type="datetime-local"
            class="form-control"
-           value="@(Model.StartTime == default(DateTime) ? DateTime.Now.ToString("yyyy-MM-ddTHH:mm") : Model.StartTime.ToString("yyyy-MM-ddTHH:mm"))" />
+           value="@(Model.StartTime == default(DateTime) ? DateTime.Now.ToString(DateFormatForStudySessionForCalculations) : Model.StartTime.ToString(DateFormatForStudySessionForCalculations))" />
     <span asp-validation-for="StartTime" class="text-danger"></span>
 </div>
 <div class="mb-3">
@@ -16,7 +17,7 @@
     <input asp-for="EndTime"
            type="datetime-local"
            class="form-control"
-           value="@(Model.EndTime == default(DateTime) ? DateTime.Now.AddHours(1).ToString("yyyy-MM-ddTHH:mm") : Model.EndTime.ToString("yyyy-MM-ddTHH:mm"))" />
+           value="@(Model.EndTime == default(DateTime) ? DateTime.Now.AddHours(1).ToString(DateFormatForStudySessionForCalculations) : Model.EndTime.ToString(DateFormatForStudySessionForCalculations))" />
     <span asp-validation-for="EndTime" class="text-danger"></span>
 </div>
 <div class="mb-3">

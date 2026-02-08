@@ -1,4 +1,5 @@
-﻿@model IEnumerable<StudyPlanner.ViewModels.StudyTask.StudyTaskViewModel>
+﻿@using static StudyPlanner.GCommon.ApplicationConstants
+@model IEnumerable<StudyPlanner.ViewModels.StudyTask.StudyTaskViewModel>
 @{
     ViewData["Title"] = "Study Tasks";
 }
@@ -36,7 +37,7 @@
                             </div>
                         </td>
                         <td>
-                            @item.DueDate.ToString("dd MMM yyyy")
+                            @item.DueDate.ToString(DateFormatForStudyTask)
                         </td>
                         <td>
                             <span class="badge @(item.Priority == "High" ? "bg-danger" :
