@@ -21,10 +21,15 @@ namespace StudyPlanner.Controllers
             _userManager = userManager;
         }
 
+            private string? GetCurrentUserId()
+            {
+                return _userManager.GetUserId(User);
+            }
+
         // GET: Category
         public async Task<IActionResult> Index()
         {
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
 
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
@@ -48,7 +53,7 @@ namespace StudyPlanner.Controllers
             if (!ModelState.IsValid)
                 return View(input);
 
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -67,7 +72,7 @@ namespace StudyPlanner.Controllers
         // GET: Category/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -101,7 +106,7 @@ namespace StudyPlanner.Controllers
             if (!ModelState.IsValid)
                 return View(input);
 
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -123,7 +128,7 @@ namespace StudyPlanner.Controllers
         // GET: Category/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -147,7 +152,7 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 

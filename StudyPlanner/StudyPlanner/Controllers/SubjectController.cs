@@ -20,10 +20,15 @@ namespace StudyPlanner.Controllers
             _userManager = userManager;
         }
 
+        private string? GetCurrentUserId()
+        {
+            return _userManager.GetUserId(User);
+        }
+
         // GET: Subject
         public async Task<IActionResult> Index()
         {
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -45,7 +50,7 @@ namespace StudyPlanner.Controllers
             if (!ModelState.IsValid)
                 return View(input);
 
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -54,7 +59,7 @@ namespace StudyPlanner.Controllers
                 await _subjectService.CreateSubjectAsync(input, userId);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ModelState.AddModelError("", "An error occurred while creating the subject.");
                 return View(input);
@@ -64,7 +69,7 @@ namespace StudyPlanner.Controllers
         // GET: Subject/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -100,7 +105,7 @@ namespace StudyPlanner.Controllers
                 return View(input);
 
 
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -122,7 +127,7 @@ namespace StudyPlanner.Controllers
         // GET: Subject/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -146,7 +151,7 @@ namespace StudyPlanner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userId = _userManager.GetUserId(User);
+            var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
