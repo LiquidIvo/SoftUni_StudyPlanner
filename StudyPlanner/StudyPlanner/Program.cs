@@ -23,8 +23,12 @@ namespace StudyPlanner
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
-            //add requirements for identity + configurations
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            
+            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            {
+                ConfigureIdentity(options, builder.Configuration);
+            }
+            )
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
@@ -65,7 +69,7 @@ namespace StudyPlanner
 
             app.Run();
         }
-        public static string GetConnection(IConfiguration configuration)
+        private static string GetConnection(IConfiguration configuration)
         {
             
             string? connection = configuration.GetConnectionString("DevConnection");
@@ -75,6 +79,29 @@ namespace StudyPlanner
             }
 
             return configuration.GetConnectionString("DefaultConnection") ?? "";
+        }
+
+        private static void ConfigureIdentity(IdentityOptions options,ConfigurationManager configuration)
+        {
+            //Account options
+            bool requireConfirmedAccount = configuration.GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedAccount");
+            bool requireConfirmedEmail = configuration.GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedEmail");
+            bool requireConfirmedPhoneNumber = configuration.GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedPhoneNumber");
+
+            // User options
+            bool requireUniqueEmail = configuration.GetValue<bool>("IdentityOptions:User:RequireUniqueEmail");
+
+            // Lockout options
+            int maxFailedAccessAttempts = configuration.GetValue<int>("IdentityOptions:Lockout:MaxFailedAccessAttempts");
+            int defaultLockoutTimeSpanMinutes = configuration.GetValue<int>("IdentityOptions:Lockout:DefaultLockoutTimeSpanMinutes");
+
+            // Password options
+            bool requireDigit = configuration.GetValue<bool>("IdentityOptions:Password:RequireDigit");
+            bool requireLowercase = configuration.GetValue<bool>("IdentityOptions:Password:RequireLowercase");
+            bool requireUppercase = configuration.GetValue<bool>("IdentityOptions:Password:RequireUppercase");
+            bool requireNonAlphanumeric = configuration.GetValue<bool>("IdentityOptions:Password:RequireNonAlphanumeric");
+            int requiredLength = configuration.GetValue<int>("IdentityOptions:Password:RequiredLength");
+            int requiredUniqueChars = configuration.GetValue<int>("IdentityOptions:Password:RequiredUniqueChars");
         }
     }
 }
