@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using StudyPlanner.Data.Models;
 using StudyPlanner.Services.Contracts;
 using StudyPlanner.ViewModels.Category;
-using System.Collections.Generic;
 
 namespace StudyPlanner.Controllers
 {

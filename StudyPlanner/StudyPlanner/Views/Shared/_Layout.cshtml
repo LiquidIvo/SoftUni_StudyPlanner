@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - StudyPlanner</title>
-
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/StudyPlanner.styles.css" asp-append-version="true" />
@@ -30,21 +29,24 @@
                 </button>
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="StudyTask" asp-action="Index">
-                                <i class="bi bi-list-task me-1"></i> Tasks
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Category" asp-action="Index">
-                                <i class="bi bi-tags me-1"></i> Categories
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Subject" asp-action="Index">
-                                <i class="bi bi-book me-1"></i> Subjects
-                            </a>
-                        </li>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="StudyTask" asp-action="Index">
+                                    <i class="bi bi-list-task me-1"></i> Tasks
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Category" asp-action="Index">
+                                    <i class="bi bi-tags me-1"></i> Categories
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Subject" asp-action="Index">
+                                    <i class="bi bi-book me-1"></i> Subjects
+                                </a>
+                            </li>
+                        }
                     </ul>
                     <div class="d-flex">
                         <partial name="_LoginPartial" />
@@ -53,17 +55,14 @@
             </div>
         </nav>
     </header>
-
     <main class="container my-4">
         @RenderBody()
     </main>
-
     <footer class="border-top bg-white text-muted py-3 mt-auto">
         <div class="container text-center small">
             &copy; 2026 <strong>StudyPlanner</strong> · Built for focus 📈
         </div>
     </footer>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

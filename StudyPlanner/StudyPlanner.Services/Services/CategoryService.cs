@@ -4,7 +4,6 @@ using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories.Interfaces;
 using StudyPlanner.Services.Contracts;
 using StudyPlanner.ViewModels.Category;
-using StudyPlanner.ViewModels.Subject;
 
 namespace StudyPlanner.Services.Services
 {
