@@ -11,15 +11,16 @@
 
 ## 📋 Table of Contents
 
-- [About the Project](#about-the-project)
-- [Technologies Used](#technologies-used)
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [Features](#features)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Contact](#contact)
+- [About the Project](#-about-the-project)
+- [Technologies Used](#️-technologies-used)
+- [Prerequisites](#-prerequisites)
+- [Getting Started](#-getting-started)
+- [Configuration](#️-configuration)
+- [Project Structure](#-project-structure)
+- [Features](#-features)
+- [Usage](#-usage)
+- [User Roles & Permissions](#-user-roles--permissions)
+- [Contact](#-contact)
 
 ---
 
