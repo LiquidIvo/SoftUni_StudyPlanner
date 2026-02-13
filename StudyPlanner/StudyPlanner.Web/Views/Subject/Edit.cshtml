@@ -1,0 +1,34 @@
+﻿@using StudyPlanner.ViewModels.Subject
+@model SubjectEditInputModel
+@{
+    ViewData["Title"] = "Edit Subject";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="mb-3">✏️ Edit Subject</h3>
+                <hr />
+                <form asp-action="Edit">
+                    <input type="hidden" asp-for="Id" />
+                    @await Html.PartialAsync("_SubjectForm", Model)
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            ← Back
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

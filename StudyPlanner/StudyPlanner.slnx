@@ -8,7 +8,7 @@
   </Folder>
   <Folder Name="/Web/">
     <Project Path="StudyPlanner.ViewModels/StudyPlanner.ViewModels.csproj" Id="6285d977-8060-4e11-913c-73d9e6a5dd75" />
-    <Project Path="StudyPlanner/StudyPlanner.Web.csproj" />
+    <Project Path="StudyPlanner.Web/StudyPlanner.Web.csproj" />
   </Folder>
   <Project Path="StudyPlanner.GCommon/StudyPlanner.GCommon.csproj" Id="be6e732f-5a5e-496b-ac2e-4c0ac4a96d30" />
 </Solution>
