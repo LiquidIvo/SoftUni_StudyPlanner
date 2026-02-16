@@ -75,16 +75,9 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                var subject = await _subjectService.GetSubjectByIdAsync(id, userId);
+                var subject = await _subjectService.GetSubjectByIdAsyncForEdit(id, userId);
 
-                var model = new SubjectEditInputModel
-                {
-                    Id = subject.Id,
-                    Name = subject.Name,
-                    Color = subject.Color
-                };
-
-                return View(model);
+                return View(subject);
             }
             catch (KeyNotFoundException)
             {

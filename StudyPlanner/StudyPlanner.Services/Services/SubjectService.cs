@@ -121,5 +121,25 @@ namespace StudyPlanner.Services.Services
             return await _subjectRepo.All()
                 .AnyAsync(s => s.Id == subjectId && s.UserId == userId);
         }
+
+        public async Task<SubjectEditInputModel> GetSubjectByIdAsyncForEdit(int id, string userId)
+        {
+            var subject = await _subjectRepo.All()
+                .Include(s => s.StudyTasks)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+
+            if (subject == null)
+                throw new KeyNotFoundException("Subject not found.");
+            if (subject.UserId != userId)
+                throw new UnauthorizedAccessException("Access denied.");
+
+            return new SubjectEditInputModel
+            {
+                Id = subject.Id,
+                Name = subject.Name,
+                Color = subject.Color
+            };
+        }
     }
 }

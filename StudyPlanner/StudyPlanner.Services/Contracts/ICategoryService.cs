@@ -9,6 +9,8 @@ namespace StudyPlanner.Services.Contracts
         Task CreateCategoryAsync(CategoryCreateInputModel input, string userId);
         Task<List<CategoryViewModel>> GetAllCategoriesAsync(string userId); 
         Task<CategoryViewModel> GetCategoryByIdAsync(int id, string userId);  
+
+        Task<CategoryEditInputModel> GetCategoryByIdAsyncForEdit(int id, string userId);    
         Task UpdateCategoryAsync(CategoryEditInputModel input, string userId);  
         Task DeleteCategoryAsync(int id, string userId);  
         Task<List<SelectListItem>> GetCategoriesForDropdownAsync(string userId);

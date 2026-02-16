@@ -76,15 +76,10 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                var category = await _categoryService.GetCategoryByIdAsync(id, userId);
-                var model = new CategoryEditInputModel
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Color = category.Color
-                };
+                var category = await _categoryService.GetCategoryByIdAsyncForEdit(id, userId);
+               
 
-                return View(model);
+                return View(category);
             }
             catch (KeyNotFoundException)
             {

@@ -14,6 +14,8 @@ namespace StudyPlanner.Services.Contracts
         Task DeleteSubjectAsync(int id, string userId);
         Task<List<SelectListItem>> GetSubjectsForDropdownAsync(string userId);
 
+       Task<SubjectEditInputModel> GetSubjectByIdAsyncForEdit(int id, string userId);
+
         Task<bool> SubjectExistsAsync(int subjectId, string userId);
     }
 }

@@ -117,5 +117,24 @@ namespace StudyPlanner.Services.Services
             return await _categoryRepo.All()
                 .AnyAsync(c => c.Id == categoryId && c.UserId == userId);
         }
+
+        public async Task<CategoryEditInputModel> GetCategoryByIdAsyncForEdit(int id, string userId)
+        {
+            var category = await _categoryRepo.All()
+               .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null)
+                throw new KeyNotFoundException("Category not found.");
+
+            if (category.UserId != userId)
+                throw new UnauthorizedAccessException("Access denied.");
+
+            return new CategoryEditInputModel
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Color = category.Color
+            };
+        }
     }
 }
