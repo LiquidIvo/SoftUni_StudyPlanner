@@ -11,7 +11,7 @@
                 <h3 class="mb-3">➕ Create Subject</h3>
                 <hr />
                 <form asp-action="Create">
-                    @await Html.PartialAsync("_SubjectForm", Model)
+                    <partial name="_SubjectForm" model="Model" />
                     <div class="d-flex justify-content-between mt-4">
                         <a asp-action="Index" class="btn btn-outline-secondary">
                             ← Back
@@ -28,6 +28,6 @@
 
 @section Scripts {
     @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <partial name="_ValidationScriptsPartial" />
     }
 }

@@ -10,7 +10,7 @@
                 <h3 class="mb-3">➕ Create Study Session</h3>
                 <hr />
                 <form asp-action="Create">
-                    @await Html.PartialAsync("_StudySessionForm", Model)
+                    <partial name="_StudySessionForm" model="Model" />
                     <div class="d-flex justify-content-between mt-4">
                         <a asp-controller="StudyTask" asp-action="Details" asp-route-id="@Model.StudyTaskId" class="btn btn-outline-secondary">
                             ← Back
@@ -27,6 +27,6 @@
 
 @section Scripts {
     @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <partial name="_ValidationScriptsPartial" />
     }
 }
