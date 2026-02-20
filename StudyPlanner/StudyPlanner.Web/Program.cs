@@ -38,6 +38,7 @@ namespace StudyPlanner
             builder.Services.AddScoped<ISubjectService, SubjectService>();
             builder.Services.AddScoped<IStudyTaskService, StudyTaskService>();
             builder.Services.AddScoped<IStudySessionService, StudySessionService>();
+            builder.Services.AddScoped<IPdfService, PdfService>();
 
             var app = builder.Build();
 

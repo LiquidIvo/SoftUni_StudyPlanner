@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.ViewModels.StudyTask;
 
 
@@ -14,17 +15,20 @@ namespace StudyPlanner.Controllers
         private readonly IStudyTaskService _studyTaskService;
         private readonly ICategoryService _categoryService;
         private readonly ISubjectService _subjectService;
+        private readonly IPdfService _pdfService;
         private readonly UserManager<IdentityUser> _userManager;
 
         public StudyTaskController(
             IStudyTaskService studyTaskService,
             ICategoryService categoryService,
             ISubjectService subjectService,
+            IPdfService pdfService,
             UserManager<IdentityUser> userManager)
         {
             _studyTaskService = studyTaskService;
             _categoryService = categoryService;
             _subjectService = subjectService;
+            _pdfService = pdfService;
             _userManager = userManager;
         }
 
@@ -214,6 +218,30 @@ namespace StudyPlanner.Controllers
                 
                 await _studyTaskService.DeleteTaskAsync(id, userId);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DownloadPdf(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            try
+            {
+
+                var task = await _studyTaskService.GetDetailedStudyTaskByIdAsync(id, userId);
+                var pdfBytes = _pdfService.GenerateStudyTaskPdf(task);
+                return File(pdfBytes, "application/pdf", $"StudyTask_{task.Title}_{DateTime.Now:yyyyMMdd}.pdf");
             }
             catch (KeyNotFoundException)
             {
