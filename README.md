@@ -207,6 +207,7 @@ StudyPlanner/
 - ✅ Clean 3-layer architecture (Data, Services, Presentation)
 - ✅ Repository pattern for data access
 - ✅ Navigation hidden from unauthenticated users
+- ✅ Downloadable PDF for specific study task with its study sessions
 
 ---
 
