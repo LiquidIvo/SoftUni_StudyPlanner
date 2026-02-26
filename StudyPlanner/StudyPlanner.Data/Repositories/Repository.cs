@@ -2,8 +2,9 @@
 using StudyPlanner.Data.Repositories.Interfaces;
 namespace StudyPlanner.Data.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T>, IDisposable where T : class
     {
+        private bool disposed = false;
         protected readonly ApplicationDbContext context;
         protected readonly DbSet<T> dbSet; 
 
@@ -19,6 +20,27 @@ namespace StudyPlanner.Data.Repositories
         public void Update(T entity) => dbSet.Update(entity);
         public void Delete(T entity) => dbSet.Remove(entity);
         public async Task<int> SaveChangesAsync() => await context.SaveChangesAsync();
+
+        
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    context.Dispose();
+                }
+
+                disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 
 }

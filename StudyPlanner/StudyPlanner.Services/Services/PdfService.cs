@@ -6,7 +6,7 @@ using StudyPlanner.ViewModels.StudyTask;
 
 
 namespace StudyPlanner.Services.Core.Services
-{
+{ 
     public class PdfService : IPdfService
     {
         public byte[] GenerateStudyTaskPdf(StudyTaskDetailsViewModel task)
