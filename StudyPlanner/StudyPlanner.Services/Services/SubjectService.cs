@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories.Interfaces;
 using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Core.Models.Subject;
 using StudyPlanner.ViewModels.Subject;
 
 
@@ -18,7 +19,7 @@ namespace StudyPlanner.Services.Services
             _subjectRepo = subjectRepo;
         }
 
-        public async Task CreateSubjectAsync(SubjectCreateInputModel input, string userId)
+        public async Task CreateSubjectAsync(SubjectCreateDTO input, string userId)
         {
 
             var subject = new Subject
@@ -32,12 +33,12 @@ namespace StudyPlanner.Services.Services
             await _subjectRepo.SaveChangesAsync();
         }
 
-        public async Task<List<SubjectViewModel>> GetAllSubjectsAsync(string userId)
+        public async Task<List<SubjectDTO>> GetAllSubjectsAsync(string userId)
         {
            
             return await _subjectRepo.All()
                 .Where(s => s.UserId == userId)
-                .Select(s => new SubjectViewModel
+                .Select(s => new SubjectDTO
                 {
                     Id = s.Id,
                     Name = s.Name,
@@ -46,7 +47,7 @@ namespace StudyPlanner.Services.Services
                 .ToListAsync();
         }
 
-        public async Task<SubjectViewModel> GetSubjectByIdAsync(int id, string userId)
+        public async Task<SubjectDTO> GetSubjectByIdAsync(int id, string userId)
         {
 
             var subject = await _subjectRepo.All()
@@ -59,7 +60,7 @@ namespace StudyPlanner.Services.Services
             if (subject.UserId != userId)
                 throw new UnauthorizedAccessException("Access denied.");
 
-            return new SubjectViewModel
+            return new SubjectDTO
             {
                 Id = subject.Id,
                 Name = subject.Name,
@@ -67,7 +68,7 @@ namespace StudyPlanner.Services.Services
             };
         }
 
-        public async Task UpdateSubjectAsync(SubjectEditInputModel input,string userId)
+        public async Task UpdateSubjectAsync(SubjectEditDTO input,string userId)
         {
             var subject = await _subjectRepo.All()
                 .FirstOrDefaultAsync(s => s.Id == input.Id);
@@ -122,7 +123,7 @@ namespace StudyPlanner.Services.Services
                 .AnyAsync(s => s.Id == subjectId && s.UserId == userId);
         }
 
-        public async Task<SubjectEditInputModel> GetSubjectByIdAsyncForEdit(int id, string userId)
+        public async Task<SubjectEditDTO> GetSubjectByIdAsyncForEdit(int id, string userId)
         {
             var subject = await _subjectRepo.All()
                 .Include(s => s.StudyTasks)
@@ -134,7 +135,7 @@ namespace StudyPlanner.Services.Services
             if (subject.UserId != userId)
                 throw new UnauthorizedAccessException("Access denied.");
 
-            return new SubjectEditInputModel
+            return new SubjectEditDTO
             {
                 Id = subject.Id,
                 Name = subject.Name,

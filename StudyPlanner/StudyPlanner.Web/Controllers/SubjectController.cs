@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Core.Models.Subject;
 using StudyPlanner.Services.Services;
 using StudyPlanner.ViewModels.Subject;
 
@@ -33,7 +35,17 @@ namespace StudyPlanner.Controllers
                 return Unauthorized();
 
             var subjects = await _subjectService.GetAllSubjectsAsync(userId);
-            return View(subjects);
+
+
+            var viewModels = subjects.Select(d => new SubjectViewModel
+            {
+                Id = d.Id,
+                Name = d.Name,
+                Color = d.Color
+            }).ToList();
+
+
+            return View(viewModels);
         }
 
         // GET: Subject/Create
@@ -56,7 +68,13 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                await _subjectService.CreateSubjectAsync(input, userId);
+                var dto = new SubjectCreateDTO
+                {
+                    Name = input.Name,
+                    Color = input.Color
+                };
+
+                await _subjectService.CreateSubjectAsync(dto, userId);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception)
@@ -75,9 +93,16 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                var subject = await _subjectService.GetSubjectByIdAsyncForEdit(id, userId);
+                var dto = await _subjectService.GetSubjectByIdAsyncForEdit(id, userId);
 
-                return View(subject);
+                var viewModel = new SubjectEditInputModel
+                {
+                    Id = dto.Id,
+                    Name = dto.Name,
+                    Color = dto.Color
+                };
+
+                return View(viewModel);
             }
             catch (KeyNotFoundException)
             {
@@ -104,7 +129,13 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                await _subjectService.UpdateSubjectAsync(input, userId);  
+                var dto = new SubjectEditDTO
+                {
+                    Id = input.Id,
+                    Name = input.Name,
+                    Color = input.Color
+                };
+                await _subjectService.UpdateSubjectAsync(dto, userId);  
                 return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException)
@@ -126,8 +157,15 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                var subject = await _subjectService.GetSubjectByIdAsync(id, userId);
-                return View(subject);
+                var dto = await _subjectService.GetSubjectByIdAsync(id, userId);
+                var viewModel = new SubjectViewModel
+                {
+                    Id = dto.Id,
+                    Name = dto.Name,
+                    Color = dto.Color
+                };  
+
+                return View(viewModel);
             }
             catch (KeyNotFoundException)
             {
@@ -156,7 +194,14 @@ namespace StudyPlanner.Controllers
             catch (InvalidOperationException ex)
             {
 
-                var subject = await _subjectService.GetSubjectByIdAsync(id, userId);
+                var dto = await _subjectService.GetSubjectByIdAsync(id, userId);
+
+                var subject = new SubjectViewModel
+                {
+                    Id = dto.Id,
+                    Name = dto.Name,
+                    Color = dto.Color
+                };
                 ViewData["ErrorMessage"] = ex.Message;
                 return View("Delete", subject);
             }
