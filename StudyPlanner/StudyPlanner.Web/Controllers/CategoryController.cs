@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Core.Models.Category;
 using StudyPlanner.ViewModels.Category;
 
 namespace StudyPlanner.Controllers
@@ -32,9 +33,17 @@ namespace StudyPlanner.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
-           
-            var categories = await _categoryService.GetAllCategoriesAsync(userId);
-            return View(categories);
+
+            var dtos = await _categoryService.GetAllCategoriesAsync(userId);
+
+            var viewModels = dtos.Select(d => new CategoryViewModel
+            {
+                Id = d.Id,
+                Name = d.Name,
+                Color = d.Color
+            }).ToList();
+
+            return View(viewModels);
         }
 
         // GET: Category/Create
@@ -57,7 +66,13 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                await _categoryService.CreateCategoryAsync(input, userId);
+                var dto = new CategoryCreateDTO
+                {
+                    Name = input.Name,
+                    Color = input.Color
+                };
+
+                await _categoryService.CreateCategoryAsync(dto, userId);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception)
@@ -76,10 +91,16 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                var category = await _categoryService.GetCategoryByIdAsyncForEdit(id, userId);
-               
+                var dto = await _categoryService.GetCategoryByIdAsyncForEdit(id, userId);
 
-                return View(category);
+                var viewModel = new CategoryEditInputModel
+                {
+                    Id = dto.Id,
+                    Name = dto.Name,
+                    Color = dto.Color
+                };
+
+                return View(viewModel);
             }
             catch (KeyNotFoundException)
             {
@@ -105,7 +126,14 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                await _categoryService.UpdateCategoryAsync(input, userId);
+                var dto = new CategoryEditDTO
+                {
+                    Id = input.Id,
+                    Name = input.Name,
+                    Color = input.Color
+                };
+
+                await _categoryService.UpdateCategoryAsync(dto, userId);
                 return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException)
@@ -127,8 +155,16 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                var category = await _categoryService.GetCategoryByIdAsync(id, userId);
-                return View(category); 
+                var dto = await _categoryService.GetCategoryByIdAsync(id, userId);
+
+                var viewModel = new CategoryViewModel
+                {
+                    Id = dto.Id,
+                    Name = dto.Name,
+                    Color = dto.Color
+                };
+
+                return View(viewModel);
             }
             catch (KeyNotFoundException)
             {
@@ -157,10 +193,16 @@ namespace StudyPlanner.Controllers
             }
             catch (InvalidOperationException ex)
             {
-               
-                var category = await _categoryService.GetCategoryByIdAsync(id, userId);
+                var dto = await _categoryService.GetCategoryByIdAsync(id, userId);
+
+                var viewModel = new CategoryViewModel
+                {
+                    Id = dto.Id,
+                    Name = dto.Name,
+                    Color = dto.Color
+                };
                 ViewData["ErrorMessage"] = ex.Message;
-                return View("Delete", category);
+                return View("Delete", viewModel);
             }
             catch (KeyNotFoundException)
             {

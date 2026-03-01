@@ -196,14 +196,14 @@ namespace StudyPlanner.Controllers
 
                 var dto = await _subjectService.GetSubjectByIdAsync(id, userId);
 
-                var subject = new SubjectViewModel
+                var viewModel = new SubjectViewModel
                 {
                     Id = dto.Id,
                     Name = dto.Name,
                     Color = dto.Color
                 };
                 ViewData["ErrorMessage"] = ex.Message;
-                return View("Delete", subject);
+                return View("Delete", viewModel);
             }
             catch (KeyNotFoundException)
             {

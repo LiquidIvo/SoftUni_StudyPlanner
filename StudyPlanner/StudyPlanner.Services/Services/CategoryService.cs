@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories.Interfaces;
 using StudyPlanner.Services.Contracts;
-using StudyPlanner.ViewModels.Category;
+using StudyPlanner.Services.Core.Models.Category;
 
 namespace StudyPlanner.Services.Services
 {
@@ -16,7 +16,7 @@ namespace StudyPlanner.Services.Services
             _categoryRepo = categoryRepo;
         }
 
-        public async Task CreateCategoryAsync(CategoryCreateInputModel input, string userId)
+        public async Task CreateCategoryAsync(CategoryCreateDTO input, string userId)
         {
 
             var category = new Category
@@ -30,11 +30,11 @@ namespace StudyPlanner.Services.Services
             await _categoryRepo.SaveChangesAsync();
         }
 
-        public async Task<List<CategoryViewModel>> GetAllCategoriesAsync(string userId)
+        public async Task<List<CategoryDTO>> GetAllCategoriesAsync(string userId)
         {
             return await _categoryRepo.All()
               .Where(s => s.UserId == userId)
-              .Select(s => new CategoryViewModel
+              .Select(s => new CategoryDTO
               {
                   Id = s.Id,
                   Name = s.Name,
@@ -43,7 +43,7 @@ namespace StudyPlanner.Services.Services
               .ToListAsync();
         }
 
-        public async Task<CategoryViewModel> GetCategoryByIdAsync(int id, string userId)
+        public async Task<CategoryDTO> GetCategoryByIdAsync(int id, string userId)
         {
             var category = await _categoryRepo.All()
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -54,7 +54,7 @@ namespace StudyPlanner.Services.Services
             if (category.UserId != userId)
                 throw new UnauthorizedAccessException("Access denied.");
 
-            return new CategoryViewModel
+            return new CategoryDTO
             {
                 Id = category.Id,
                 Name = category.Name,
@@ -62,7 +62,7 @@ namespace StudyPlanner.Services.Services
             };
         }
 
-        public async Task UpdateCategoryAsync(CategoryEditInputModel input, string userId)
+        public async Task UpdateCategoryAsync(CategoryEditDTO input, string userId)
         {
             var category = await _categoryRepo.All()
                 .FirstOrDefaultAsync(c => c.Id == input.Id);
@@ -118,7 +118,7 @@ namespace StudyPlanner.Services.Services
                 .AnyAsync(c => c.Id == categoryId && c.UserId == userId);
         }
 
-        public async Task<CategoryEditInputModel> GetCategoryByIdAsyncForEdit(int id, string userId)
+        public async Task<CategoryEditDTO> GetCategoryByIdAsyncForEdit(int id, string userId)
         {
             var category = await _categoryRepo.All()
                .FirstOrDefaultAsync(c => c.Id == id);
@@ -129,7 +129,7 @@ namespace StudyPlanner.Services.Services
             if (category.UserId != userId)
                 throw new UnauthorizedAccessException("Access denied.");
 
-            return new CategoryEditInputModel
+            return new CategoryEditDTO
             {
                 Id = category.Id,
                 Name = category.Name,
