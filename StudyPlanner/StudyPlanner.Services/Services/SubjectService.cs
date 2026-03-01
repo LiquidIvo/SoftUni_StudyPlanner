@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;  
+using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories.Interfaces;
-using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Models.Subject;
-using StudyPlanner.ViewModels.Subject;
 
 
 
-namespace StudyPlanner.Services.Services
+namespace StudyPlanner.Services.Core.Services
 {
     public class SubjectService : ISubjectService
     {

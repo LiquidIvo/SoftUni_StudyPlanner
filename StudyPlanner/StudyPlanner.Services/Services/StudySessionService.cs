@@ -2,7 +2,7 @@
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories.Interfaces;
 using StudyPlanner.Services.Core.Contracts;
-using StudyPlanner.ViewModels.StudySession;
+using StudyPlanner.Services.Core.Models.StudySession;
 
 namespace StudyPlanner.Services.Core.Services
 {
@@ -29,7 +29,7 @@ namespace StudyPlanner.Services.Core.Services
             if (task.UserId != userId)
                 throw new UnauthorizedAccessException("Access denied.");
         }
-        public async Task CreateStudySessionAsync(StudySessionCreateInputModel input,int studyTaskId, string userId)
+        public async Task CreateStudySessionAsync(StudySessionCreateDTO input,int studyTaskId, string userId)
         {
             var studyTask = await _studyTaskRepo.All()
                .FirstOrDefaultAsync(c => c.Id == studyTaskId);
@@ -70,11 +70,11 @@ namespace StudyPlanner.Services.Core.Services
             return session.StudyTaskId;
         }
 
-        public async Task<List<StudySessionViewModel>> GetAllStudySessionsAsync(string userId)
+        public async Task<List<StudySessionDTO>> GetAllStudySessionsAsync(string userId)
         {
             return await _sessionRepo.All()
                 .Where(s => s.UserId == userId)
-                .Select(s => new StudySessionViewModel
+                .Select(s => new StudySessionDTO
                 {
                     Id = s.Id,
                     StudyTaskId = s.StudyTaskId,
@@ -85,7 +85,7 @@ namespace StudyPlanner.Services.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<StudySessionViewModel> GetStudySessionByIdAsync(int id, string userId)
+        public async Task<StudySessionDTO> GetStudySessionByIdAsync(int id, string userId)
         {
             var session = await _sessionRepo.All()
                .FirstOrDefaultAsync(c => c.Id == id);
@@ -96,7 +96,7 @@ namespace StudyPlanner.Services.Core.Services
             if (session.UserId != userId)
                 throw new UnauthorizedAccessException("Access denied.");
 
-            return new StudySessionViewModel
+            return new StudySessionDTO
             {
                 Id = session.Id,
                 StudyTaskId = session.StudyTaskId,
@@ -107,7 +107,7 @@ namespace StudyPlanner.Services.Core.Services
             };
         }
 
-        public async Task<StudySessionEditInputModel> GetStudySessionByIdAsyncForEdit(int id, string userId)
+        public async Task<StudySessionEditDTO> GetStudySessionByIdAsyncForEdit(int id, string userId)
         {
             var session = await _sessionRepo.All()
                .FirstOrDefaultAsync(c => c.Id == id);
@@ -119,7 +119,7 @@ namespace StudyPlanner.Services.Core.Services
                 throw new UnauthorizedAccessException("Access denied.");
 
 
-            return new StudySessionEditInputModel
+            return new StudySessionEditDTO
             {
                 Id = session.Id,
                 StudyTaskId = session.StudyTaskId,
@@ -129,7 +129,7 @@ namespace StudyPlanner.Services.Core.Services
             };
         }
 
-        public async Task UpdateStudySessionAsync(StudySessionEditInputModel input, string userId)
+        public async Task UpdateStudySessionAsync(StudySessionEditDTO input, string userId)
         {
             var session = await _sessionRepo.All()
                .FirstOrDefaultAsync(c => c.Id == input.Id);

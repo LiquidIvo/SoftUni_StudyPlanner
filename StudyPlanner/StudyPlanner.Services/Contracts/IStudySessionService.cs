@@ -1,16 +1,15 @@
-﻿using StudyPlanner.ViewModels.StudySession;
-using StudyPlanner.ViewModels.Subject;
+﻿using StudyPlanner.Services.Core.Models.StudySession;
 
 namespace StudyPlanner.Services.Core.Contracts
 {
     public interface IStudySessionService
     {
-        Task CreateStudySessionAsync(StudySessionCreateInputModel input, int studyTaskId, string userId);
-        Task<List<StudySessionViewModel>> GetAllStudySessionsAsync(string userId);
-        Task<StudySessionViewModel> GetStudySessionByIdAsync(int id, string userId);
-        Task UpdateStudySessionAsync(StudySessionEditInputModel input, string userId);
+        Task CreateStudySessionAsync(StudySessionCreateDTO input, int studyTaskId, string userId);
+        Task<List<StudySessionDTO>> GetAllStudySessionsAsync(string userId);
+        Task<StudySessionDTO> GetStudySessionByIdAsync(int id, string userId);
+        Task UpdateStudySessionAsync(StudySessionEditDTO input, string userId);
         Task<int> DeleteStudySessionAsync(int id, string userId);
-        Task<StudySessionEditInputModel> GetStudySessionByIdAsyncForEdit(int id, string userId);
+        Task<StudySessionEditDTO> GetStudySessionByIdAsyncForEdit(int id, string userId);
 
         Task CheckTaskOwnershipAsync(int taskId, string userId);
     }

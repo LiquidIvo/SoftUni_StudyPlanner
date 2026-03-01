@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
 using StudyPlanner.Data.Repositories;
 using StudyPlanner.Data.Repositories.Interfaces;
-using StudyPlanner.Services.Contracts;
 using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Services;
-using StudyPlanner.Services.Services;
 
-namespace StudyPlanner
+namespace StudyPlanner.Web
 {
     public class Program
     {

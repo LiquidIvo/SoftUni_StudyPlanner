@@ -1,8 +1,7 @@
-﻿using StudyPlanner.ViewModels.StudySession;
-using StudyPlanner.ViewModels.StudyTask;
+﻿using StudyPlanner.ViewModels.StudyTask;
 
 
-namespace StudyPlanner.Services.Contracts
+namespace StudyPlanner.Services.Core.Contracts
 {
     public interface IStudyTaskService
     {

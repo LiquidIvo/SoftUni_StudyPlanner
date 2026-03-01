@@ -1,14 +1,12 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Models.Subject;
-using StudyPlanner.Services.Services;
 using StudyPlanner.ViewModels.Subject;
 
 
-namespace StudyPlanner.Controllers
+namespace StudyPlanner.Web.Controllers
 {
     [Authorize]
     public class SubjectController : Controller

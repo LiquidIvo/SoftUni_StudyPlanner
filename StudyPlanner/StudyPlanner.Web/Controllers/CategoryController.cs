@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Models.Category;
 using StudyPlanner.ViewModels.Category;
 
-namespace StudyPlanner.Controllers
+namespace StudyPlanner.Web.Controllers
 {
     [Authorize]
     public class CategoryController : Controller

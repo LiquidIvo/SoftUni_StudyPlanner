@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StudyPlanner.Data.Models;
-using StudyPlanner.Services.Contracts;
 using StudyPlanner.Services.Core.Contracts;
+using StudyPlanner.Services.Core.Models.StudySession;
 using StudyPlanner.ViewModels.StudySession;
 
-namespace StudyPlanner.Controllers
+namespace StudyPlanner.Web.Controllers
 {
     [Authorize]
     public class StudySessionController : Controller
@@ -16,7 +14,7 @@ namespace StudyPlanner.Controllers
     
         private readonly UserManager<IdentityUser> _userManager;
 
-        public StudySessionController(IStudySessionService sessionService, IStudyTaskService studyTaskService, UserManager<IdentityUser> userManager)
+        public StudySessionController(IStudySessionService sessionService, UserManager<IdentityUser> userManager)
         {
            
             _sessionService = sessionService;
@@ -37,9 +35,18 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                var session = await _sessionService.GetStudySessionByIdAsync(id, userId);
+                var dto = await _sessionService.GetStudySessionByIdAsync(id, userId);
 
-                return View(session);
+                var viewModel = new StudySessionViewModel
+                {
+                    Id = dto.Id,
+                    StudyTaskId = dto.StudyTaskId,
+                    StartTime = dto.StartTime,
+                    EndTime = dto.EndTime,
+                    Notes = dto.Notes
+                };
+
+                return View(viewModel);
             }
             catch (KeyNotFoundException)
             {
@@ -98,8 +105,14 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                
-                await _sessionService.CreateStudySessionAsync(input, input.StudyTaskId, userId);
+                var dto = new StudySessionCreateDTO
+                {
+                    StartTime = input.StartTime,
+                    EndTime = input.EndTime,
+                    Notes = input.Notes,
+                    StudyTaskId = input.StudyTaskId
+                };
+                await _sessionService.CreateStudySessionAsync(dto, input.StudyTaskId, userId);
                 return RedirectToAction("Details", "StudyTask", new { id = input.StudyTaskId });
             }
             catch (KeyNotFoundException)
@@ -121,8 +134,18 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                var session = await _sessionService.GetStudySessionByIdAsyncForEdit(id, userId);
-                return View(session);
+                var dto = await _sessionService.GetStudySessionByIdAsyncForEdit(id, userId);
+
+                var viewModel = new StudySessionEditInputModel
+                {
+                    Id = dto.Id,
+                    StudyTaskId = dto.StudyTaskId,
+                    StartTime = dto.StartTime,
+                    EndTime = dto.EndTime,
+                    Notes = dto.Notes
+                };
+
+                return View(viewModel);
             }
             catch (KeyNotFoundException)
             {
@@ -150,7 +173,16 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                await _sessionService.UpdateStudySessionAsync(input, userId);
+                var dto = new StudySessionEditDTO
+                {
+                    Id = input.Id,
+                    StudyTaskId = input.StudyTaskId,
+                    StartTime = input.StartTime,
+                    EndTime = input.EndTime,
+                    Notes = input.Notes
+                };
+
+                await _sessionService.UpdateStudySessionAsync(dto, userId);
                 return RedirectToAction("Details", "StudyTask", new { id = input.StudyTaskId });
             }
             catch (KeyNotFoundException)
@@ -173,8 +205,18 @@ namespace StudyPlanner.Controllers
 
             try
             {
-                var session = await _sessionService.GetStudySessionByIdAsync(id, userId);
-                return View(session);
+                var dto = await _sessionService.GetStudySessionByIdAsync(id, userId);
+
+                var viewModel = new StudySessionViewModel
+                {
+                    Id = dto.Id,
+                    StudyTaskId = dto.StudyTaskId,
+                    StartTime = dto.StartTime,
+                    EndTime = dto.EndTime,
+                    Notes = dto.Notes
+                };
+
+                return View(viewModel);
             }
             catch (KeyNotFoundException)
             {

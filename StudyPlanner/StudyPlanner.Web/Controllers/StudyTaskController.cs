@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using StudyPlanner.Services.Contracts;
 using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.ViewModels.StudyTask;
 
 
-namespace StudyPlanner.Controllers
+namespace StudyPlanner.Web.Controllers
 {
     [Authorize]
     public class StudyTaskController : Controller

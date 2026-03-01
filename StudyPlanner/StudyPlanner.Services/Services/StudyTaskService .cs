@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories.Interfaces;
-using StudyPlanner.Services.Contracts;
+using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.ViewModels.StudyTask;
 
-namespace StudyPlanner.Services.Services
+namespace StudyPlanner.Services.Core.Services
 {
     public class StudyTaskService : IStudyTaskService
     {

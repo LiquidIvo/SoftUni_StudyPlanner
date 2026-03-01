@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using StudyPlanner.Services.Core.Models.Category;
-using StudyPlanner.ViewModels.Category;
 
 
-namespace StudyPlanner.Services.Contracts
+namespace StudyPlanner.Services.Core.Contracts
 {
     public interface ICategoryService
     {
