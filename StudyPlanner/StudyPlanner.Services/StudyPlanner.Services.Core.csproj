@@ -15,8 +15,4 @@
     <PackageReference Include="QuestPDF" Version="2024.12.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\StudyTask\" />
-  </ItemGroup>
-
 </Project>

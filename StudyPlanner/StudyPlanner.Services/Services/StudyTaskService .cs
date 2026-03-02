@@ -2,7 +2,7 @@
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories.Interfaces;
 using StudyPlanner.Services.Core.Contracts;
-using StudyPlanner.ViewModels.StudyTask;
+using StudyPlanner.Services.Core.Models.StudyTask;
 
 namespace StudyPlanner.Services.Core.Services
 {
@@ -19,7 +19,7 @@ namespace StudyPlanner.Services.Core.Services
             _subjectService = subjectService;
         }
 
-        public async Task CreateTaskAsync(StudyTaskCreateInputModel input, string userId)
+        public async Task CreateTaskAsync(StudyTaskCreateDTO input, string userId)
         {
 
             if (!await _categoryService.CategoryExistsAsync(input.CategoryId, userId))
@@ -43,13 +43,13 @@ namespace StudyPlanner.Services.Core.Services
             await _taskRepo.SaveChangesAsync();
         }
 
-        public async Task<List<StudyTaskViewModel>> GetAllTasksAsync(string userId)
+        public async Task<List<StudyTaskDTO>> GetAllTasksAsync(string userId)
         {
             return await _taskRepo.All()
               .Where(s => s.UserId == userId)
               .Include(t => t.Category)
               .Include(t => t.Subject)
-              .Select(s => new StudyTaskViewModel
+              .Select(s => new StudyTaskDTO
               {
                     Id = s.Id,
                     Title = s.Title.ToString(),
@@ -65,12 +65,13 @@ namespace StudyPlanner.Services.Core.Services
               .ToListAsync();
         }
 
-        public async Task<StudyTaskViewModel> GetTaskByIdAsync(int id, string userId)
+        public async Task<StudyTaskDTO> GetTaskByIdAsync(int id, string userId)
         {
             var task = await _taskRepo.All()
                 .Include(t => t.StudySessions)
                 .Include(c => c.Category)
                 .Include(s => s.Subject)
+
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (task == null)
@@ -78,7 +79,7 @@ namespace StudyPlanner.Services.Core.Services
             if (task.UserId != userId)
                 throw new UnauthorizedAccessException("Access denied.");
 
-            return new StudyTaskViewModel
+            return new StudyTaskDTO
             {
                 Id = task.Id,
                 Title = task.Title,
@@ -93,7 +94,7 @@ namespace StudyPlanner.Services.Core.Services
             };
         }
 
-        public async Task UpdateTaskAsync(StudyTaskEditInputModel input, string userId)
+        public async Task UpdateTaskAsync(StudyTaskEditDTO input, string userId)
         {
             var task = await _taskRepo
                 .All()
@@ -141,7 +142,7 @@ namespace StudyPlanner.Services.Core.Services
             await _taskRepo.SaveChangesAsync();
         }
 
-        public async Task<StudyTaskDetailsViewModel> GetDetailedStudyTaskByIdAsync(int id, string userId)
+        public async Task<StudyTaskDetailsDTO> GetDetailedStudyTaskByIdAsync(int id, string userId)
         {
             var task = await _taskRepo
                 .All()
@@ -155,7 +156,7 @@ namespace StudyPlanner.Services.Core.Services
             if (task.UserId != userId)
                 throw new UnauthorizedAccessException("Access denied.");
 
-            return new StudyTaskDetailsViewModel
+            return new StudyTaskDetailsDTO
             {
                 Id = task.Id,
                 Title = task.Title,
@@ -167,7 +168,7 @@ namespace StudyPlanner.Services.Core.Services
                 CategoryColor = task.Category.Color,
                 Subject = task.Subject.Name,
                 SubjectColor = task.Subject.Color,
-                StudySessions = task.StudySessions.Select(s => new StudySessionItemViewModel
+                StudySessions = task.StudySessions.Select(s => new StudySessionItemDTO
                 {
                     Id = s.Id,
                     StartTime = s.StartTime,
@@ -178,7 +179,7 @@ namespace StudyPlanner.Services.Core.Services
             };
         }
 
-        public async Task<StudyTaskEditInputModel> GetStudyTaskForEditByIdAsync(int id, string userId)
+        public async Task<StudyTaskEditDTO> GetStudyTaskForEditByIdAsync(int id, string userId)
         {
             var task = await _taskRepo
                 .All()
@@ -189,7 +190,7 @@ namespace StudyPlanner.Services.Core.Services
             if (task.UserId != userId)
                 throw new UnauthorizedAccessException("Access denied.");
 
-            return new StudyTaskEditInputModel
+            return new StudyTaskEditDTO
             {
                 Id = task.Id,
                 Title = task.Title,

@@ -2,6 +2,7 @@
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using StudyPlanner.Services.Core.Contracts;
+using StudyPlanner.Services.Core.Models.StudyTask;
 using StudyPlanner.ViewModels.StudyTask;
 
 
@@ -9,7 +10,7 @@ namespace StudyPlanner.Services.Core.Services
 { 
     public class PdfService : IPdfService
     {
-        public byte[] GenerateStudyTaskPdf(StudyTaskDetailsViewModel task)
+        public byte[] GenerateStudyTaskPdf(StudyTaskDetailsDTO task)
         {
             QuestPDF.Settings.License = LicenseType.Community;
             var document = QuestPDF.Fluent.Document.Create(container =>
