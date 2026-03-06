@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 col-lg-6 text-center">
+        <div class="card shadow-sm border-warning border-2">
+            <div class="card-body py-5 px-4">
+
+                <div class="display-1 fw-bold text-warning mb-2">403</div>
+
+                <div class="mb-3" style="font-size: 4rem; line-height: 1;">🔒</div>
+
+                <h2 class="fw-bold mb-2">Access Denied</h2>
+                <p class="text-muted mb-4">
+                    You don't have permission to view this page.<br />
+                    This resource belongs to another user.
+                </p>
+
+                <hr class="my-4" />
+
+                <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-warning text-white">
+                        <i class="bi bi-house-door me-1"></i> Go Home
+                    </a>
+                    <a asp-controller="StudyTask" asp-action="Index" class="btn btn-outline-warning">
+                        <i class="bi bi-list-task me-1"></i> My Tasks
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

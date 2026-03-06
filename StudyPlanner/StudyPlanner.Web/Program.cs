@@ -61,6 +61,8 @@ namespace StudyPlanner.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
