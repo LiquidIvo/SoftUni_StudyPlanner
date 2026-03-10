@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
 using StudyPlanner.Data.Repositories;
@@ -37,6 +38,7 @@ namespace StudyPlanner.Web
             builder.Services.AddScoped<IStudyTaskService, StudyTaskService>();
             builder.Services.AddScoped<IStudySessionService, StudySessionService>();
             builder.Services.AddScoped<IPdfService, PdfService>();
+            builder.Services.AddHttpClient<IQuoteService, QuoteService>();
 
             var app = builder.Build();
 
