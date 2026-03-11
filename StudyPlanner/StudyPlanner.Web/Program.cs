@@ -30,9 +30,9 @@ namespace StudyPlanner.Web
             )
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
+          
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ISubjectService, SubjectService>();
             builder.Services.AddScoped<IStudyTaskService, StudyTaskService>();

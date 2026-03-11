@@ -25,27 +25,29 @@ namespace StudyPlanner.Services.Core.Services
                 var json = await response.Content.ReadAsStringAsync();
                 var results = JsonSerializer.Deserialize<List<ZenQuoteResponse>>(json);
 
-                if (results != null && results.Count > 0)
+                if (results == null || results.Count == 0)
                 {
-                    return new QuoteDTO
-                    {
-                        Text = results[0].q,
-                        Author = results[0].a
-                    };
+                    throw new HttpRequestException("No quote.");
+                  
                 }
+
+                return new QuoteDTO
+                {
+                    Text = results[0].q,
+                    Author = results[0].a
+                };
             }
             catch (HttpRequestException ex)
             {
                 throw new HttpRequestException();
             }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
           
 
 
-            return new QuoteDTO
-            {
-                Text = "The secret of getting ahead is getting started.",
-                Author = "Mark Twain"
-            };
         }
     }
 }

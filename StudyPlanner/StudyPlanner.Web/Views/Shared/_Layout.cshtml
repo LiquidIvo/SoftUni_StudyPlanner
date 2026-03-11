@@ -62,13 +62,14 @@
         <div class="container text-center small">
             &copy; 2026 <strong>StudyPlanner</strong> · Built for focus 📈
         </div>
-        <div class="container">
-            @await Component.InvokeAsync("Quote")
+        <div class="container text-center small fst-italic mt-1" id="quote-container">
+            <span class="text-muted opacity-50">Loading quote...</span>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/quote.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
