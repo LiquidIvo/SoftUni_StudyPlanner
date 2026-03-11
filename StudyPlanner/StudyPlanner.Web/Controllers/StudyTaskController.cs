@@ -72,9 +72,9 @@ namespace StudyPlanner.Web.Controllers
         }
 
         // GET: StudyTask/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null) return NotFound();
+            
 
             var userId = GetCurrentUserId();
 
@@ -83,7 +83,7 @@ namespace StudyPlanner.Web.Controllers
 
             try
             {
-                var dto = await _studyTaskService.GetDetailedStudyTaskByIdAsync(id.Value, userId);
+                var dto = await _studyTaskService.GetDetailedStudyTaskByIdAsync(id, userId);
 
                 var viewModel =  new StudyTaskDetailsViewModel
                 {
@@ -165,9 +165,9 @@ namespace StudyPlanner.Web.Controllers
         }
 
         // GET: StudyTask/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null) return NotFound();
+            
 
             var userId = GetCurrentUserId();
             if (string.IsNullOrEmpty(userId))
@@ -176,7 +176,7 @@ namespace StudyPlanner.Web.Controllers
             try
             {
 
-                var dto = await _studyTaskService.GetStudyTaskForEditByIdAsync(id.Value, userId);
+                var dto = await _studyTaskService.GetStudyTaskForEditByIdAsync(id, userId);
 
                 var viewModel = new StudyTaskEditInputModel
                 {
