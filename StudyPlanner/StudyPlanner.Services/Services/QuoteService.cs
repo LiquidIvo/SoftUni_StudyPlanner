@@ -37,11 +37,11 @@ namespace StudyPlanner.Services.Core.Services
                     Author = results[0].a
                 };
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 throw new HttpRequestException();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception();
             }

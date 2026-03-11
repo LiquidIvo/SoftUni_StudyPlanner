@@ -25,7 +25,7 @@ namespace StudyPlanner.Web.Controllers
                 return _userManager.GetUserId(User);
             }
 
-        // GET: Category
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var userId = GetCurrentUserId();
@@ -46,13 +46,13 @@ namespace StudyPlanner.Web.Controllers
             return View(viewModels);
         }
 
-        // GET: Category/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View(new CategoryCreateInputModel());
         }
 
-        // POST: Category/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryCreateInputModel input)
@@ -82,7 +82,7 @@ namespace StudyPlanner.Web.Controllers
             }
         }
 
-        // GET: Category/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var userId = GetCurrentUserId();
@@ -112,7 +112,7 @@ namespace StudyPlanner.Web.Controllers
             }
         }
 
-        // POST: Category/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(CategoryEditInputModel input)
@@ -146,7 +146,7 @@ namespace StudyPlanner.Web.Controllers
             }
         }
 
-        // GET: Category/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var userId = GetCurrentUserId();
@@ -176,7 +176,7 @@ namespace StudyPlanner.Web.Controllers
             }
         }
 
-        // POST: Category/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

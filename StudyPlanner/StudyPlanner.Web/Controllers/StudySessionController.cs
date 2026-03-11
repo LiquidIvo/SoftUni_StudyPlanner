@@ -25,6 +25,8 @@ namespace StudyPlanner.Web.Controllers
         {
             return _userManager.GetUserId(User);
         }
+
+        [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
 
@@ -59,7 +61,7 @@ namespace StudyPlanner.Web.Controllers
         }
 
 
-        // GET: StudySession/Create
+        [HttpGet]
         public async Task<IActionResult> Create(int studyTaskId)
         {
             var userId = GetCurrentUserId();
@@ -87,9 +89,7 @@ namespace StudyPlanner.Web.Controllers
 
         }
 
-        // POST: StudySession/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(StudySessionCreateInputModel input)
@@ -125,7 +125,7 @@ namespace StudyPlanner.Web.Controllers
             }
         }
 
-        // GET
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var userId = GetCurrentUserId();
@@ -157,7 +157,7 @@ namespace StudyPlanner.Web.Controllers
             }
         }
 
-        // POST
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(StudySessionEditInputModel input)
@@ -196,7 +196,7 @@ namespace StudyPlanner.Web.Controllers
         }
 
 
-        // GET: StudySession/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var userId = GetCurrentUserId();
@@ -228,7 +228,7 @@ namespace StudyPlanner.Web.Controllers
             }
         }
 
-        // POST: StudySession/Delete/5
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
