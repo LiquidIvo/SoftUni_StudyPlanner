@@ -19,7 +19,7 @@ namespace StudyPlanner.Services.Core.Services
             _subjectService = subjectService;
         }
 
-        public async Task CreateTaskAsync(StudyTaskCreateDTO input, string userId)
+        public async Task CreateTaskAsync(StudyTaskCreateDTO input, Guid userId)
         {
 
             if (!await _categoryService.CategoryExistsAsync(input.CategoryId, userId))
@@ -43,7 +43,7 @@ namespace StudyPlanner.Services.Core.Services
             await _taskRepo.SaveChangesAsync();
         }
 
-        public async Task<List<StudyTaskDTO>> GetAllTasksAsync(string userId)
+        public async Task<List<StudyTaskDTO>> GetAllTasksAsync(Guid userId)
         {
             return await _taskRepo.All()
               .Where(s => s.UserId == userId)
@@ -65,7 +65,7 @@ namespace StudyPlanner.Services.Core.Services
               .ToListAsync();
         }
 
-        public async Task<StudyTaskDTO> GetTaskByIdAsync(int id, string userId)
+        public async Task<StudyTaskDTO> GetTaskByIdAsync(int id, Guid userId)
         {
             var task = await _taskRepo.All()
                 .Include(t => t.StudySessions)
@@ -94,7 +94,7 @@ namespace StudyPlanner.Services.Core.Services
             };
         }
 
-        public async Task UpdateTaskAsync(StudyTaskEditDTO input, string userId)
+        public async Task UpdateTaskAsync(StudyTaskEditDTO input, Guid userId)
         {
             var task = await _taskRepo
                 .All()
@@ -127,7 +127,7 @@ namespace StudyPlanner.Services.Core.Services
             await _taskRepo.SaveChangesAsync();
         }
 
-        public async Task DeleteTaskAsync(int id, string userId)
+        public async Task DeleteTaskAsync(int id, Guid userId)
         {
             var task = await _taskRepo
                 .All()
@@ -142,7 +142,7 @@ namespace StudyPlanner.Services.Core.Services
             await _taskRepo.SaveChangesAsync();
         }
 
-        public async Task<StudyTaskDetailsDTO> GetDetailedStudyTaskByIdAsync(int id, string userId)
+        public async Task<StudyTaskDetailsDTO> GetDetailedStudyTaskByIdAsync(int id, Guid userId)
         {
             var task = await _taskRepo
                 .All()
@@ -179,7 +179,7 @@ namespace StudyPlanner.Services.Core.Services
             };
         }
 
-        public async Task<StudyTaskEditDTO> GetStudyTaskForEditByIdAsync(int id, string userId)
+        public async Task<StudyTaskEditDTO> GetStudyTaskForEditByIdAsync(int id, Guid userId)
         {
             var task = await _taskRepo
                 .All()

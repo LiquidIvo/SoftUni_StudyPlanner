@@ -6,14 +6,14 @@ namespace StudyPlanner.Services.Core.Contracts
 {
     public interface ICategoryService
     {
-        Task CreateCategoryAsync(CategoryCreateDTO input, string userId);
-        Task<List<CategoryDTO>> GetAllCategoriesAsync(string userId); 
-        Task<CategoryDTO> GetCategoryByIdAsync(int id, string userId);  
+        Task CreateCategoryAsync(CategoryCreateDTO input, Guid userId);
+        Task<List<CategoryDTO>> GetAllCategoriesAsync(Guid userId); 
+        Task<CategoryDTO> GetCategoryByIdAsync(int id, Guid userId);  
 
-        Task<CategoryEditDTO> GetCategoryByIdAsyncForEdit(int id, string userId);    
-        Task UpdateCategoryAsync(CategoryEditDTO input, string userId);  
-        Task DeleteCategoryAsync(int id, string userId);  
-        Task<List<SelectListItem>> GetCategoriesForDropdownAsync(string userId);
-        Task<bool> CategoryExistsAsync(int categoryId, string userId);
+        Task<CategoryEditDTO> GetCategoryByIdAsyncForEdit(int id, Guid userId);    
+        Task UpdateCategoryAsync(CategoryEditDTO input, Guid userId);  
+        Task DeleteCategoryAsync(int id, Guid userId);  
+        Task<List<SelectListItem>> GetCategoriesForDropdownAsync(Guid userId);
+        Task<bool> CategoryExistsAsync(int categoryId, Guid userId);
     }
 }

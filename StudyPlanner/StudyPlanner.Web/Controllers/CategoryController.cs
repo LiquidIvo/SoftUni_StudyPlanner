@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using StudyPlanner.Data.Models;
 using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Models.Category;
 using StudyPlanner.ViewModels.Category;
@@ -12,17 +13,18 @@ namespace StudyPlanner.Web.Controllers
     {
        
         private readonly ICategoryService _categoryService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CategoryController(ICategoryService categoryService, UserManager<IdentityUser> userManager)
+        public CategoryController(ICategoryService categoryService, UserManager<ApplicationUser> userManager)
         {
             _categoryService = categoryService;
             _userManager = userManager;
         }
 
-            private string? GetCurrentUserId()
+            private Guid GetCurrentUserId()
             {
-                return _userManager.GetUserId(User);
+                var userId = _userManager.GetUserId(User);
+                return Guid.Parse(userId!);
             }
 
         [HttpGet]
@@ -30,8 +32,6 @@ namespace StudyPlanner.Web.Controllers
         {
             var userId = GetCurrentUserId();
 
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
 
 
             var dtos = await _categoryService.GetAllCategoriesAsync(userId);
@@ -61,8 +61,7 @@ namespace StudyPlanner.Web.Controllers
                 return View(input);
 
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+           
 
             try
             {
@@ -86,8 +85,7 @@ namespace StudyPlanner.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+           
 
             try
             {
@@ -121,8 +119,7 @@ namespace StudyPlanner.Web.Controllers
                 return View(input);
 
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+          
 
             try
             {
@@ -150,8 +147,7 @@ namespace StudyPlanner.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+           
 
             try
             {
@@ -182,8 +178,7 @@ namespace StudyPlanner.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+           
 
             try
             {

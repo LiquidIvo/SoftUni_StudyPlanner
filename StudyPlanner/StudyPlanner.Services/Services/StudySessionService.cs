@@ -16,7 +16,7 @@ namespace StudyPlanner.Services.Core.Services
             _studyTaskRepo = studyTaskRepo;
         }
 
-        public async Task CheckTaskOwnershipAsync(int taskId, string userId)
+        public async Task CheckTaskOwnershipAsync(int taskId, Guid userId)
         {
             var task = await _studyTaskRepo.All()
             .Where(t => t.Id == taskId)
@@ -29,7 +29,7 @@ namespace StudyPlanner.Services.Core.Services
             if (task.UserId != userId)
                 throw new UnauthorizedAccessException("Access denied.");
         }
-        public async Task CreateStudySessionAsync(StudySessionCreateDTO input,int studyTaskId, string userId)
+        public async Task CreateStudySessionAsync(StudySessionCreateDTO input,int studyTaskId, Guid userId)
         {
             var studyTask = await _studyTaskRepo.All()
                .FirstOrDefaultAsync(c => c.Id == studyTaskId);
@@ -53,7 +53,7 @@ namespace StudyPlanner.Services.Core.Services
             await _sessionRepo.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteStudySessionAsync(int id, string userId)
+        public async Task<int> DeleteStudySessionAsync(int id, Guid userId)
         {
             var session = await _sessionRepo.All()
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -70,7 +70,7 @@ namespace StudyPlanner.Services.Core.Services
             return session.StudyTaskId;
         }
 
-        public async Task<List<StudySessionDTO>> GetAllStudySessionsAsync(string userId)
+        public async Task<List<StudySessionDTO>> GetAllStudySessionsAsync(Guid userId)
         {
             return await _sessionRepo.All()
                 .Where(s => s.UserId == userId)
@@ -85,7 +85,7 @@ namespace StudyPlanner.Services.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<StudySessionDTO> GetStudySessionByIdAsync(int id, string userId)
+        public async Task<StudySessionDTO> GetStudySessionByIdAsync(int id, Guid userId)
         {
             var session = await _sessionRepo.All()
                .FirstOrDefaultAsync(c => c.Id == id);
@@ -107,7 +107,7 @@ namespace StudyPlanner.Services.Core.Services
             };
         }
 
-        public async Task<StudySessionEditDTO> GetStudySessionByIdAsyncForEdit(int id, string userId)
+        public async Task<StudySessionEditDTO> GetStudySessionByIdAsyncForEdit(int id, Guid userId)
         {
             var session = await _sessionRepo.All()
                .FirstOrDefaultAsync(c => c.Id == id);
@@ -129,7 +129,7 @@ namespace StudyPlanner.Services.Core.Services
             };
         }
 
-        public async Task UpdateStudySessionAsync(StudySessionEditDTO input, string userId)
+        public async Task UpdateStudySessionAsync(StudySessionEditDTO input, Guid userId)
         {
             var session = await _sessionRepo.All()
                .FirstOrDefaultAsync(c => c.Id == input.Id);

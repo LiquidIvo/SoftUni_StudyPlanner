@@ -18,7 +18,7 @@ namespace StudyPlanner.Services.Core.Services
             _subjectRepo = subjectRepo;
         }
 
-        public async Task CreateSubjectAsync(SubjectCreateDTO input, string userId)
+        public async Task CreateSubjectAsync(SubjectCreateDTO input, Guid userId)
         {
 
             var subject = new Subject
@@ -32,7 +32,7 @@ namespace StudyPlanner.Services.Core.Services
             await _subjectRepo.SaveChangesAsync();
         }
 
-        public async Task<List<SubjectDTO>> GetAllSubjectsAsync(string userId)
+        public async Task<List<SubjectDTO>> GetAllSubjectsAsync(Guid userId)
         {
            
             return await _subjectRepo.All()
@@ -46,7 +46,7 @@ namespace StudyPlanner.Services.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<SubjectDTO> GetSubjectByIdAsync(int id, string userId)
+        public async Task<SubjectDTO> GetSubjectByIdAsync(int id, Guid userId)
         {
 
             var subject = await _subjectRepo.All()
@@ -67,7 +67,7 @@ namespace StudyPlanner.Services.Core.Services
             };
         }
 
-        public async Task UpdateSubjectAsync(SubjectEditDTO input,string userId)
+        public async Task UpdateSubjectAsync(SubjectEditDTO input, Guid userId)
         {
             var subject = await _subjectRepo.All()
                 .FirstOrDefaultAsync(s => s.Id == input.Id);
@@ -85,7 +85,7 @@ namespace StudyPlanner.Services.Core.Services
             await _subjectRepo.SaveChangesAsync();
         }
 
-        public async Task DeleteSubjectAsync(int id, string userId)
+        public async Task DeleteSubjectAsync(int id, Guid userId)
         {
             var subject = await _subjectRepo.All()
                .Include(c => c.StudyTasks)
@@ -104,7 +104,7 @@ namespace StudyPlanner.Services.Core.Services
             await _subjectRepo.SaveChangesAsync();
         }
 
-        public async Task<List<SelectListItem>> GetSubjectsForDropdownAsync(string userId)
+        public async Task<List<SelectListItem>> GetSubjectsForDropdownAsync(Guid userId)
         {
             return await _subjectRepo.All()
                 .Where(c => c.UserId == userId)
@@ -116,13 +116,13 @@ namespace StudyPlanner.Services.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<bool> SubjectExistsAsync(int subjectId, string userId)
+        public async Task<bool> SubjectExistsAsync(int subjectId, Guid userId)
         {
             return await _subjectRepo.All()
                 .AnyAsync(s => s.Id == subjectId && s.UserId == userId);
         }
 
-        public async Task<SubjectEditDTO> GetSubjectByIdAsyncForEdit(int id, string userId)
+        public async Task<SubjectEditDTO> GetSubjectByIdAsyncForEdit(int id, Guid userId)
         {
             var subject = await _subjectRepo.All()
                 .Include(s => s.StudyTasks)

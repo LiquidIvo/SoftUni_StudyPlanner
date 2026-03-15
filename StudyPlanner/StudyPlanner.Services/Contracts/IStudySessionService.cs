@@ -4,13 +4,13 @@ namespace StudyPlanner.Services.Core.Contracts
 {
     public interface IStudySessionService
     {
-        Task CreateStudySessionAsync(StudySessionCreateDTO input, int studyTaskId, string userId);
-        Task<List<StudySessionDTO>> GetAllStudySessionsAsync(string userId);
-        Task<StudySessionDTO> GetStudySessionByIdAsync(int id, string userId);
-        Task UpdateStudySessionAsync(StudySessionEditDTO input, string userId);
-        Task<int> DeleteStudySessionAsync(int id, string userId);
-        Task<StudySessionEditDTO> GetStudySessionByIdAsyncForEdit(int id, string userId);
+        Task CreateStudySessionAsync(StudySessionCreateDTO input, int studyTaskId, Guid userId);
+        Task<List<StudySessionDTO>> GetAllStudySessionsAsync(Guid userId);
+        Task<StudySessionDTO> GetStudySessionByIdAsync(int id, Guid userId);
+        Task UpdateStudySessionAsync(StudySessionEditDTO input, Guid userId);
+        Task<int> DeleteStudySessionAsync(int id, Guid userId);
+        Task<StudySessionEditDTO> GetStudySessionByIdAsyncForEdit(int id, Guid userId);
 
-        Task CheckTaskOwnershipAsync(int taskId, string userId);
+        Task CheckTaskOwnershipAsync(int taskId, Guid userId);
     }
 }

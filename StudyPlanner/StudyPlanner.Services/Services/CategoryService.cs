@@ -16,7 +16,7 @@ namespace StudyPlanner.Services.Core.Services
             _categoryRepo = categoryRepo;
         }
 
-        public async Task CreateCategoryAsync(CategoryCreateDTO input, string userId)
+        public async Task CreateCategoryAsync(CategoryCreateDTO input, Guid userId)
         {
 
             var category = new Category
@@ -30,7 +30,7 @@ namespace StudyPlanner.Services.Core.Services
             await _categoryRepo.SaveChangesAsync();
         }
 
-        public async Task<List<CategoryDTO>> GetAllCategoriesAsync(string userId)
+        public async Task<List<CategoryDTO>> GetAllCategoriesAsync(Guid userId)
         {
             return await _categoryRepo.All()
               .Where(s => s.UserId == userId)
@@ -43,7 +43,7 @@ namespace StudyPlanner.Services.Core.Services
               .ToListAsync();
         }
 
-        public async Task<CategoryDTO> GetCategoryByIdAsync(int id, string userId)
+        public async Task<CategoryDTO> GetCategoryByIdAsync(int id, Guid userId)
         {
             var category = await _categoryRepo.All()
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -62,7 +62,7 @@ namespace StudyPlanner.Services.Core.Services
             };
         }
 
-        public async Task UpdateCategoryAsync(CategoryEditDTO input, string userId)
+        public async Task UpdateCategoryAsync(CategoryEditDTO input, Guid userId)
         {
             var category = await _categoryRepo.All()
                 .FirstOrDefaultAsync(c => c.Id == input.Id);
@@ -80,7 +80,7 @@ namespace StudyPlanner.Services.Core.Services
             await _categoryRepo.SaveChangesAsync();
         }
 
-        public async Task DeleteCategoryAsync(int id, string userId)
+        public async Task DeleteCategoryAsync(int id, Guid userId)
         {
             var category = await _categoryRepo.All()
                 .Include(c => c.StudyTasks)
@@ -100,7 +100,7 @@ namespace StudyPlanner.Services.Core.Services
             await _categoryRepo.SaveChangesAsync();
         }
 
-        public async Task<List<SelectListItem>> GetCategoriesForDropdownAsync(string userId)
+        public async Task<List<SelectListItem>> GetCategoriesForDropdownAsync(Guid userId)
         {
             return await _categoryRepo.All()
                 .Where(c => c.UserId == userId)
@@ -112,13 +112,13 @@ namespace StudyPlanner.Services.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<bool> CategoryExistsAsync(int categoryId, string userId)
+        public async Task<bool> CategoryExistsAsync(int categoryId, Guid userId)
         {
             return await _categoryRepo.All()
                 .AnyAsync(c => c.Id == categoryId && c.UserId == userId);
         }
 
-        public async Task<CategoryEditDTO> GetCategoryByIdAsyncForEdit(int id, string userId)
+        public async Task<CategoryEditDTO> GetCategoryByIdAsyncForEdit(int id, Guid userId)
         {
             var category = await _categoryRepo.All()
                .FirstOrDefaultAsync(c => c.Id == id);

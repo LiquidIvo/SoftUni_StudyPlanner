@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyPlanner.ViewModels;
 
-namespace StudyPlanner.Controllers
+namespace StudyPlanner.Web.Controllers
 {
     [AllowAnonymous]
     public class HomeController : Controller

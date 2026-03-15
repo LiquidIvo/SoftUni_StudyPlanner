@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using StudyPlanner.Data.Models;
 using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Models.StudyTask;
 using StudyPlanner.ViewModels.StudyTask;
@@ -15,14 +16,14 @@ namespace StudyPlanner.Web.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ISubjectService _subjectService;
         private readonly IPdfService _pdfService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public StudyTaskController(
             IStudyTaskService studyTaskService,
             ICategoryService categoryService,
             ISubjectService subjectService,
             IPdfService pdfService,
-            UserManager<IdentityUser> userManager)
+            UserManager<ApplicationUser> userManager)
         {
             _studyTaskService = studyTaskService;
             _categoryService = categoryService;
@@ -31,9 +32,10 @@ namespace StudyPlanner.Web.Controllers
             _userManager = userManager;
         }
 
-        private string? GetCurrentUserId()
+        private Guid GetCurrentUserId()
         {
-            return _userManager.GetUserId(User);
+            var userId = _userManager.GetUserId(User);
+            return Guid.Parse(userId!);
         }
 
         [HttpGet]
@@ -41,8 +43,6 @@ namespace StudyPlanner.Web.Controllers
         {
             var userId = GetCurrentUserId();
 
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
 
             try
             {
@@ -78,8 +78,7 @@ namespace StudyPlanner.Web.Controllers
 
             var userId = GetCurrentUserId();
 
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+           
 
             try
             {
@@ -131,8 +130,7 @@ namespace StudyPlanner.Web.Controllers
         public async Task<IActionResult> Create(StudyTaskCreateInputModel model)
         {
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+          
 
             if (!ModelState.IsValid)
             {
@@ -168,10 +166,7 @@ namespace StudyPlanner.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             
-
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
 
             try
             {
@@ -209,8 +204,7 @@ namespace StudyPlanner.Web.Controllers
         public async Task<IActionResult> Edit(StudyTaskEditInputModel model)
         {
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+           
 
             if (!ModelState.IsValid)
             {
@@ -256,8 +250,7 @@ namespace StudyPlanner.Web.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+           
 
             try
             {
@@ -295,8 +288,7 @@ namespace StudyPlanner.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+          
 
             try
             {
@@ -317,9 +309,8 @@ namespace StudyPlanner.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> DownloadPdf(int id)
         {
-            var userId = _userManager.GetUserId(User);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+            var userId = GetCurrentUserId();
+           
 
             try
             {
@@ -341,8 +332,7 @@ namespace StudyPlanner.Web.Controllers
         private async Task LoadDropdowns()
         {
             var userId = GetCurrentUserId();
-            if (string.IsNullOrEmpty(userId))
-                return;
+          
 
             ViewBag.CategoryId = await _categoryService.GetCategoriesForDropdownAsync(userId);
             ViewBag.SubjectId = await _subjectService.GetSubjectsForDropdownAsync(userId);

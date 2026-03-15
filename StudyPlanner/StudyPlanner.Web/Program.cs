@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
+using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories;
 using StudyPlanner.Data.Repositories.Interfaces;
 using StudyPlanner.Services.Core.Contracts;
@@ -14,7 +15,8 @@ namespace StudyPlanner.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+           
+           
             // Add services to the container.
             string? connectionString = GetConnection(builder.Configuration);
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -23,11 +25,12 @@ namespace StudyPlanner.Web
 
 
             
-            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 ConfigureIdentity(options, builder.Configuration);
             }
             )
+                .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
           

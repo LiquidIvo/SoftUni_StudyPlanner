@@ -27,7 +27,7 @@ namespace StudyPlanner.Data.Models
 
         [Required]
         [ForeignKey(nameof(User))]
-        public string UserId { get; set; } = null!;
-        public virtual IdentityUser User { get; set; } = null!;
+        public Guid UserId { get; set; } 
+        public virtual ApplicationUser User { get; set; } = null!;
     }
 }

@@ -6,15 +6,15 @@ namespace StudyPlanner.Services.Core.Contracts
 {
     public interface ISubjectService
     {
-        Task CreateSubjectAsync(SubjectCreateDTO input, string userId);
-        Task<List<SubjectDTO>> GetAllSubjectsAsync(string userId);  
-        Task<SubjectDTO> GetSubjectByIdAsync(int id, string userId);
-        Task UpdateSubjectAsync(SubjectEditDTO input, string userId); 
-        Task DeleteSubjectAsync(int id, string userId);
-        Task<List<SelectListItem>> GetSubjectsForDropdownAsync(string userId);
+        Task CreateSubjectAsync(SubjectCreateDTO input, Guid userId);
+        Task<List<SubjectDTO>> GetAllSubjectsAsync(Guid userId);  
+        Task<SubjectDTO> GetSubjectByIdAsync(int id, Guid userId);
+        Task UpdateSubjectAsync(SubjectEditDTO input, Guid userId); 
+        Task DeleteSubjectAsync(int id, Guid userId);
+        Task<List<SelectListItem>> GetSubjectsForDropdownAsync(Guid userId);
 
-       Task<SubjectEditDTO> GetSubjectByIdAsyncForEdit(int id, string userId);
+       Task<SubjectEditDTO> GetSubjectByIdAsyncForEdit(int id, Guid userId);
 
-        Task<bool> SubjectExistsAsync(int subjectId, string userId);
+        Task<bool> SubjectExistsAsync(int subjectId, Guid userId);
     }
 }

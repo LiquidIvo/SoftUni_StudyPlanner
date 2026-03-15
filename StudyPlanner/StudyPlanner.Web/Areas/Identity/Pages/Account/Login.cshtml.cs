@@ -5,20 +5,20 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using StudyPlanner.Data.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 
-namespace StudyPlanner.Areas.Identity.Pages.Account
+namespace StudyPlanner.Web.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoginModel"/> class.
         /// </summary>
         /// <param name="signInManager">Sign-in manager to handle user login.</param>
-        public LoginModel(SignInManager<IdentityUser> signInManager)
+        public LoginModel(SignInManager<ApplicationUser> signInManager)
         {
             _signInManager = signInManager;
         }

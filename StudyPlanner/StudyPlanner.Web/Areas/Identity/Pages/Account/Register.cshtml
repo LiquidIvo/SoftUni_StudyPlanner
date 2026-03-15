@@ -17,6 +17,18 @@
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
                     <div class="mb-3">
+                        <label asp-for="Input.FullName" class="form-label">Full Name</label>
+                        <input asp-for="Input.FullName" class="form-control"  aria-required="true" />
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.DateOfBirth" class="form-label">Date of birth</label>
+                        <input asp-for="Input.DateOfBirth" class="form-control" aria-required="true" />
+                        <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
                         <label asp-for="Input.Email" class="form-label">Email</label>
                         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                         <span asp-validation-for="Input.Email" class="text-danger"></span>

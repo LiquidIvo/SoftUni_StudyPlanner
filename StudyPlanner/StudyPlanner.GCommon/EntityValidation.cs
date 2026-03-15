@@ -19,5 +19,8 @@
 
         //StudySession 
         public const int StudySessionNotesMaxLength = 300;
+
+        // Identity
+        public const int FullNameMaxLength = 50;
     }
 }
