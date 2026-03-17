@@ -21,6 +21,13 @@
     <ProjectReference Include="..\StudyPlanner.GCommon\StudyPlanner.GCommon.csproj" />
     <ProjectReference Include="..\StudyPlanner.Services\StudyPlanner.Services.Core.csproj" />
     <ProjectReference Include="..\StudyPlanner.ViewModels\StudyPlanner.ViewModels.csproj" />
+    <ProjectReference Include="..\StudyPlanner.Web.Infrastructure\StudyPlanner.Web.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Controllers\" />
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Views\" />
   </ItemGroup>
 
 </Project>

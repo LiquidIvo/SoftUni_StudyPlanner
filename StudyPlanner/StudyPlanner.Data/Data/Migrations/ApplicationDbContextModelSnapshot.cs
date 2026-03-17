@@ -228,24 +228,6 @@ namespace StudyPlanner.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("a63459c3-04ff-4cd8-bfdd-4687b96eacd4"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "e86591f2-08fd-4876-90fb-e2a315ef7ef4",
-                            Email = "admin@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@GMAIL.COM",
-                            NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECWa9b6kIIM6w9jh/4UTXIf5PDc2Wv9by7L+2Iz7L8+QK1aFs9AF8gUVwcyUXC/10w==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "fc10a4bd-acf4-4533-8636-280003beb6a6",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@gmail.com"
-                        });
                 });
 
             modelBuilder.Entity("StudyPlanner.Data.Models.Category", b =>

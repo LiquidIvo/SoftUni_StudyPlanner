@@ -47,20 +47,7 @@ namespace StudyPlanner.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-            var admin = new ApplicationUser
-            {
-                Id = Guid.NewGuid(),
-                UserName = "admin@gmail.com",
-                NormalizedUserName = "ADMIN@GMAIL.COM",
-                Email = "admin@gmail.com",
-                NormalizedEmail = "ADMIN@GMAIL.COM",
-                SecurityStamp = Guid.NewGuid().ToString(), 
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                EmailConfirmed = true,
-                PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(new ApplicationUser { UserName = "admin@gmail.com" }, "Admin12345!")
-
-            };
-            builder.Entity<ApplicationUser>().HasData(admin);
+          
         }
     }
 }

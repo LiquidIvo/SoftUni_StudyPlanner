@@ -2,11 +2,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
+using StudyPlanner.Data.Configuration;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories;
 using StudyPlanner.Data.Repositories.Interfaces;
+using StudyPlanner.Data.Seeding;
+using StudyPlanner.Data.Seeding.Contracts;
 using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Services;
+using StudyPlanner.Web.Infrastructure.Extensions;
 
 namespace StudyPlanner.Web
 {
@@ -15,8 +19,8 @@ namespace StudyPlanner.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-           
-           
+
+    
             // Add services to the container.
             string? connectionString = GetConnection(builder.Configuration);
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -33,7 +37,8 @@ namespace StudyPlanner.Web
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
-          
+
+            builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -66,11 +71,21 @@ namespace StudyPlanner.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseRolesSeeder();
+            app.UseAdminUserSeeder();
+
             app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+                  name: "areas",
+                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                
+            
+
             app.MapRazorPages();
 
             app.Run();

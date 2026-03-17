@@ -117,11 +117,7 @@ namespace StudyPlanner.Web.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    
-                    if(!await _roleManager.RoleExistsAsync("User"))
-                    {
-                        await _roleManager.CreateAsync(new ApplicationRole { Name = "User" });
-                    }
+                  
                     
                     await _userManager.AddToRoleAsync(user, "User");
 
