@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data;
-using StudyPlanner.Data.Configuration;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories;
 using StudyPlanner.Data.Repositories.Interfaces;
@@ -39,7 +37,7 @@ namespace StudyPlanner.Web
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
-
+            builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ISubjectService, SubjectService>();
@@ -73,17 +71,19 @@ namespace StudyPlanner.Web
 
             app.UseRolesSeeder();
             app.UseAdminUserSeeder();
-
+            //
             app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
+
+            app.MapControllerRoute(
+                 name: "areas",
+                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            app.MapControllerRoute(
-                  name: "areas",
-                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-                
+           
             
 
             app.MapRazorPages();
@@ -102,27 +102,28 @@ namespace StudyPlanner.Web
             return configuration.GetConnectionString("DefaultConnection") ?? "";
         }
 
-        private static void ConfigureIdentity(IdentityOptions options,ConfigurationManager configuration)
+        private static void ConfigureIdentity(IdentityOptions options, ConfigurationManager configuration)
         {
-            //Account options
-            bool requireConfirmedAccount = configuration.GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedAccount");
-            bool requireConfirmedEmail = configuration.GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedEmail");
-            bool requireConfirmedPhoneNumber = configuration.GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedPhoneNumber");
+            // SignIn
+            options.SignIn.RequireConfirmedAccount = configuration.GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedAccount");
+            options.SignIn.RequireConfirmedEmail = configuration.GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedEmail");
+            options.SignIn.RequireConfirmedPhoneNumber = configuration.GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedPhoneNumber");
 
-            // User options
-            bool requireUniqueEmail = configuration.GetValue<bool>("IdentityOptions:User:RequireUniqueEmail");
+            // User
+            options.User.RequireUniqueEmail = configuration.GetValue<bool>("IdentityOptions:User:RequireUniqueEmail");
 
-            // Lockout options
-            int maxFailedAccessAttempts = configuration.GetValue<int>("IdentityOptions:Lockout:MaxFailedAccessAttempts");
-            int defaultLockoutTimeSpanMinutes = configuration.GetValue<int>("IdentityOptions:Lockout:DefaultLockoutTimeSpanMinutes");
+            // Lockout
+            options.Lockout.MaxFailedAccessAttempts = configuration.GetValue<int>("IdentityOptions:Lockout:MaxFailedAccessAttempts");
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(
+                configuration.GetValue<int>("IdentityOptions:Lockout:DefaultLockoutTimeSpanMinutes"));
 
-            // Password options
-            bool requireDigit = configuration.GetValue<bool>("IdentityOptions:Password:RequireDigit");
-            bool requireLowercase = configuration.GetValue<bool>("IdentityOptions:Password:RequireLowercase");
-            bool requireUppercase = configuration.GetValue<bool>("IdentityOptions:Password:RequireUppercase");
-            bool requireNonAlphanumeric = configuration.GetValue<bool>("IdentityOptions:Password:RequireNonAlphanumeric");
-            int requiredLength = configuration.GetValue<int>("IdentityOptions:Password:RequiredLength");
-            int requiredUniqueChars = configuration.GetValue<int>("IdentityOptions:Password:RequiredUniqueChars");
+            // Password
+            options.Password.RequireDigit = configuration.GetValue<bool>("IdentityOptions:Password:RequireDigit");
+            options.Password.RequireLowercase = configuration.GetValue<bool>("IdentityOptions:Password:RequireLowercase");
+            options.Password.RequireUppercase = configuration.GetValue<bool>("IdentityOptions:Password:RequireUppercase");
+            options.Password.RequireNonAlphanumeric = configuration.GetValue<bool>("IdentityOptions:Password:RequireNonAlphanumeric");
+            options.Password.RequiredLength = configuration.GetValue<int>("IdentityOptions:Password:RequiredLength");
+            options.Password.RequiredUniqueChars = configuration.GetValue<int>("IdentityOptions:Password:RequiredUniqueChars");
         }
     }
 }
