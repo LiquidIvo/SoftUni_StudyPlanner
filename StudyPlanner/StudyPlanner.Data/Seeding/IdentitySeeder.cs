@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Seeding.Contracts;
-
+using static StudyPlanner.GCommon.ApplicationConstants;
 namespace StudyPlanner.Data.Seeding
 {
     public class IdentitySeeder : IIdentitySeeder
@@ -13,8 +13,8 @@ namespace StudyPlanner.Data.Seeding
 
         public static string[] ApplicationRoles = new[]
         {
-            "Admin",
-            "User"
+            AdminRoleName,
+            UserRoleName
         };
 
         private readonly RoleManager<ApplicationRole> roleManager;
@@ -75,11 +75,11 @@ namespace StudyPlanner.Data.Seeding
                 }
             }
 
-            bool isInRole = await userManager.IsInRoleAsync(adminUser, "Admin");
+            bool isInRole = await userManager.IsInRoleAsync(adminUser, AdminRoleName);
 
             if (!isInRole)
             {
-                var result = await userManager.AddToRoleAsync(adminUser, "Admin");
+                var result = await userManager.AddToRoleAsync(adminUser, AdminRoleName);
 
                 if (!result.Succeeded)
                 {

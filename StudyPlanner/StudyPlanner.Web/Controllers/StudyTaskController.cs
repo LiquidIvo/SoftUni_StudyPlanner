@@ -5,11 +5,11 @@ using StudyPlanner.Data.Models;
 using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Models.StudyTask;
 using StudyPlanner.ViewModels.StudyTask;
-
+using static StudyPlanner.GCommon.ApplicationConstants;
 
 namespace StudyPlanner.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = AdminOrUser)]
     public class StudyTaskController : Controller
     {
         private readonly IStudyTaskService _studyTaskService;

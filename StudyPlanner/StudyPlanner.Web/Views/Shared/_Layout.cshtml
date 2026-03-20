@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - StudyPlanner</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/StudyPlanner.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/StudyPlanner.styles.css" asp-append-version="true" /> 
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="~/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="~/favicon-16x16.png" />
@@ -32,20 +32,33 @@
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="StudyTask" asp-action="Index">
+                                <a class="nav-link" asp-area="" asp-controller="StudyTask" asp-action="Index">
                                     <i class="bi bi-list-task me-1"></i> Tasks
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Category" asp-action="Index">
+                                <a class="nav-link" asp-area="" asp-controller="Category" asp-action="Index">
                                     <i class="bi bi-tags me-1"></i> Categories
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Subject" asp-action="Index">
+                                <a class="nav-link" asp-area="" asp-controller="Subject" asp-action="Index">
                                     <i class="bi bi-book me-1"></i> Subjects
                                 </a>
                             </li>
+
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning fw-semibold"
+                                           asp-area="Admin"
+                                           asp-controller="Users"
+                                           asp-action="Index">
+                                        <i class="bi bi-shield-lock me-1"></i> Admin
+                                    </a>
+                                </li>
+                            }
                         }
                     </ul>
                     <div class="d-flex">
@@ -73,3 +86,9 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+
+
+
+
+

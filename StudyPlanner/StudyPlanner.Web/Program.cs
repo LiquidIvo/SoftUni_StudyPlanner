@@ -36,6 +36,13 @@ namespace StudyPlanner.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Error/403";
+                
+            });
+
             builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

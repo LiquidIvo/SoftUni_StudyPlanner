@@ -5,10 +5,10 @@ using StudyPlanner.Data.Models;
 using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Models.Category;
 using StudyPlanner.ViewModels.Category;
-
+using static StudyPlanner.GCommon.ApplicationConstants;
 namespace StudyPlanner.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = AdminOrUser)]
     public class CategoryController : Controller
     {
        
