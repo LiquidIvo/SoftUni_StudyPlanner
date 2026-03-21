@@ -32,11 +32,22 @@ namespace StudyPlanner.Services.Core.Services
             await _subjectRepo.SaveChangesAsync();
         }
 
-        public async Task<List<SubjectDTO>> GetAllSubjectsAsync(Guid userId)
+        public async Task<(List<SubjectDTO> Items,int TotalCount)> GetAllSubjectsAsync(Guid userId,string? searchTerm,int pageNumber,int pageSize)
         {
-           
-            return await _subjectRepo.All()
-                .Where(s => s.UserId == userId)
+
+            var query = _subjectRepo.All()
+               .Where(s => s.UserId == userId);
+
+            if(!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(s => s.Name.Contains(searchTerm));
+            }
+
+            var totalCount = await query.CountAsync();
+
+              var items =  await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .Select(s => new SubjectDTO
                 {
                     Id = s.Id,
@@ -44,6 +55,9 @@ namespace StudyPlanner.Services.Core.Services
                     Color = s.Color
                 })
                 .ToListAsync();
+
+
+            return (items,totalCount);
         }
 
         public async Task<SubjectDTO> GetSubjectByIdAsync(int id, Guid userId)

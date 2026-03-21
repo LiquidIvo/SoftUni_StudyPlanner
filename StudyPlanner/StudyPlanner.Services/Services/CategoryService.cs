@@ -31,7 +31,7 @@ namespace StudyPlanner.Services.Core.Services
             await _categoryRepo.SaveChangesAsync();
         }
 
-        public async Task<(List<CategoryDTO> Items, int TotalCount)> GetAllCategoriesAsync(Guid userId,string? searchTerm,int pageNumber ,int pageSize )
+        public async Task<(List<CategoryDTO> Items, int TotalCount)> GetAllCategoriesAsync(Guid userId,string? searchTerm,int pageNumber ,int pageSize)
         {
             var query = _categoryRepo.All()
               .Where(c => c.UserId == userId);
