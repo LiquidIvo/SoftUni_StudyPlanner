@@ -28,20 +28,23 @@ namespace StudyPlanner.Web.Controllers
             }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchTerm,int pageNumber = PageNumber)
         {
             var userId = GetCurrentUserId();
+            
 
-
-
-            var dtos = await _categoryService.GetAllCategoriesAsync(userId);
-
+            var (dtos, totalCount) = await _categoryService.GetAllCategoriesAsync(userId,searchTerm,pageNumber,PageSize);
+            
             var viewModels = dtos.Select(d => new CategoryViewModel
             {
                 Id = d.Id,
                 Name = d.Name,
                 Color = d.Color
             }).ToList();
+
+            ViewData["SearchTerm"] = searchTerm;
+            ViewData["PageNumber"] = pageNumber;
+            ViewData["TotalPages"] = (int)Math.Ceiling((double)totalCount / PageSize);
 
             return View(viewModels);
         }

@@ -11,5 +11,10 @@
         public const string AdminAreaName = "Admin";    
         public const string UserRoleName = "User";
         public const string AdminOrUser = AdminRoleName + "," + UserRoleName;
+
+
+
+        public const int PageSize = 5;
+        public const int PageNumber = 1;
     }
 }

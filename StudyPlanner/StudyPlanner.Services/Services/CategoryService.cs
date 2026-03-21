@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories.Interfaces;
 using StudyPlanner.Services.Core.Contracts;
@@ -30,17 +31,31 @@ namespace StudyPlanner.Services.Core.Services
             await _categoryRepo.SaveChangesAsync();
         }
 
-        public async Task<List<CategoryDTO>> GetAllCategoriesAsync(Guid userId)
+        public async Task<(List<CategoryDTO> Items, int TotalCount)> GetAllCategoriesAsync(Guid userId,string? searchTerm,int pageNumber ,int pageSize )
         {
-            return await _categoryRepo.All()
-              .Where(s => s.UserId == userId)
-              .Select(s => new CategoryDTO
+            var query = _categoryRepo.All()
+              .Where(c => c.UserId == userId);
+
+            if(!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(c => c.Name.Contains(searchTerm));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(c => c.Name)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new CategoryDTO
               {
-                  Id = s.Id,
-                  Name = s.Name,
-                  Color = s.Color
+                  Id = c.Id,
+                  Name = c.Name,
+                  Color = c.Color
               })
               .ToListAsync();
+
+            return (items,totalCount);
         }
 
         public async Task<CategoryDTO> GetCategoryByIdAsync(int id, Guid userId)
