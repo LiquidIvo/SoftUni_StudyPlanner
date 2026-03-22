@@ -160,14 +160,84 @@ namespace StudyPlanner.Services.Core.Services
             await _taskRepo.SaveChangesAsync();
         }
 
-        public async Task<StudyTaskDetailsDTO> GetDetailedStudyTaskByIdAsync(int id, Guid userId)
+        public async Task<(StudyTaskDetailsDTO Task, int TotalSessions)> GetDetailedStudyTaskByIdAsync(int id, Guid userId, int pageNumber, int pageSize)
+        {
+            var task = await _taskRepo.All()
+                .Include(t => t.Category)
+                .Include(t => t.Subject)
+                .Include(t => t.StudySessions)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (task == null)
+                throw new KeyNotFoundException("Task not found.");
+            if (task.UserId != userId)
+                throw new UnauthorizedAccessException("Access denied.");
+
+
+            var totalCount = task.StudySessions.Count();
+
+
+            var sessions = task.StudySessions
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(s => new StudySessionItemDTO
+                {
+                    Id = s.Id,
+                    StartTime = s.StartTime,
+                    EndTime = s.EndTime, 
+                    Notes = s.Notes
+                }).ToList();
+
+            var dto = new StudyTaskDetailsDTO
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority.ToString(),
+                Status = task.Status.ToString(),
+                Category = task.Category.Name,
+                CategoryColor = task.Category.Color,
+                Subject = task.Subject.Name,
+                SubjectColor = task.Subject.Color,
+                StudySessions = sessions
+            };
+
+            return (dto, totalCount);
+        }
+
+        public async Task<StudyTaskEditDTO> GetStudyTaskForEditByIdAsync(int id, Guid userId)
         {
             var task = await _taskRepo
                 .All()
-                .Include(t => t.StudySessions)
-                .Include(c => c.Category)
-                .Include(s => s.Subject)
                 .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (task == null)
+                throw new KeyNotFoundException("Task not found.");
+            if (task.UserId != userId)
+                throw new UnauthorizedAccessException("Access denied.");
+
+            return new StudyTaskEditDTO
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                DueDate = task.DueDate,
+                Priority = task.Priority,
+                Status = task.Status,
+                CategoryId = task.CategoryId,
+                SubjectId = task.SubjectId
+            };
+        }
+
+        public async Task<StudyTaskDetailsDTO> GetDetailedStudyTaskForPDF(int id, Guid userId)
+        {
+            var task = await _taskRepo
+              .All()
+              .Include(t => t.StudySessions)
+              .Include(c => c.Category)
+              .Include(s => s.Subject)
+              .FirstOrDefaultAsync(t => t.Id == id);
 
             if (task == null)
                 throw new KeyNotFoundException("Task not found.");
@@ -192,32 +262,8 @@ namespace StudyPlanner.Services.Core.Services
                     StartTime = s.StartTime,
                     EndTime = s.EndTime,
                     Notes = s.Notes
-                    
+
                 }).ToList()
-            };
-        }
-
-        public async Task<StudyTaskEditDTO> GetStudyTaskForEditByIdAsync(int id, Guid userId)
-        {
-            var task = await _taskRepo
-                .All()
-                .FirstOrDefaultAsync(t => t.Id == id);
-
-            if (task == null)
-                throw new KeyNotFoundException("Task not found.");
-            if (task.UserId != userId)
-                throw new UnauthorizedAccessException("Access denied.");
-
-            return new StudyTaskEditDTO
-            {
-                Id = task.Id,
-                Title = task.Title,
-                Description = task.Description,
-                DueDate = task.DueDate,
-                Priority = task.Priority,
-                Status = task.Status,
-                CategoryId = task.CategoryId,
-                SubjectId = task.SubjectId
             };
         }
     }

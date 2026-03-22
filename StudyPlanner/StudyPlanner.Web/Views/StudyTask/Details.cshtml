@@ -2,6 +2,8 @@
 @model StudyPlanner.ViewModels.StudyTask.StudyTaskDetailsViewModel
 @{
     ViewData["Title"] = "Task Details";
+    var pageNumber = (int)(ViewData["PageNumber"] ?? 1);
+    var totalPages = (int)(ViewData["TotalPages"] ?? 1);
 }
 
 <div class="row justify-content-center">
@@ -11,7 +13,6 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3 class="mb-0">📋 @Model.Title</h3>
-                    
                     <a asp-action="DownloadPdf" asp-route-id="@Model.Id" class="btn btn-danger">
                         <i class="bi bi-file-pdf me-1"></i> Download PDF
                     </a>
@@ -26,28 +27,34 @@
 
                     <dt class="col-sm-3">Priority</dt>
                     <dd class="col-sm-9">
-                        <span class="badge @(Model.Priority == "High" ? "bg-danger" : Model.Priority == "Medium" ? "bg-warning text-dark" : "bg-secondary")">
+                        <span class="badge @(Model.Priority == "High" ? "bg-danger" :
+                                                                                                       Model.Priority == "Medium" ? "bg-warning text-dark" :
+                                                                                                       "bg-secondary")">
                             @Model.Priority
                         </span>
                     </dd>
 
                     <dt class="col-sm-3">Status</dt>
                     <dd class="col-sm-9">
-                        <span class="badge @(Model.Status == "Completed" ? "bg-success" : Model.Status == "InProgress" ? "bg-info" : "bg-secondary")">
+                        <span class="badge @(Model.Status == "Completed"  ? "bg-success" :
+                                                                                                       Model.Status == "InProgress" ? "bg-info" :
+                                                                                                       "bg-secondary")">
                             @Model.Status
                         </span>
                     </dd>
 
                     <dt class="col-sm-3">Category</dt>
                     <dd class="col-sm-9">
-                        <span class="badge d-inline-block text-wrap" style="background-color:@Model.CategoryColor; color:white; max-width: 100%;">
+                        <span class="badge d-inline-block text-wrap"
+                              style="background-color:@Model.CategoryColor; color:white; max-width:100%;">
                             @Model.Category
                         </span>
                     </dd>
 
                     <dt class="col-sm-3">Subject</dt>
                     <dd class="col-sm-9">
-                        <span class="badge d-inline-block text-wrap" style="background-color:@Model.SubjectColor; color:white; max-width: 100%;">
+                        <span class="badge d-inline-block text-wrap"
+                              style="background-color:@Model.SubjectColor; color:white; max-width:100%;">
                             @Model.Subject
                         </span>
                     </dd>
@@ -69,12 +76,12 @@
             </div>
         </div>
 
-
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="mb-0">⏱️ Study Sessions</h4>
-                    <a asp-controller="StudySession" asp-action="Create" asp-route-studyTaskId="@Model.Id" class="btn btn-success">
+                    <a asp-controller="StudySession" asp-action="Create"
+                           asp-route-studyTaskId="@Model.Id" class="btn btn-success">
                         + Add Session
                     </a>
                 </div>
@@ -102,30 +109,46 @@
                                             @((session.EndTime - session.StartTime).TotalMinutes.ToString("0")) min
                                         </span>
                                     </td>
-                                    <td style="max-width: 250px;">
-                                        <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="@session.Notes">
+                                    <td style="max-width:250px;">
+                                        <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"
+                                             title="@session.Notes">
                                             @(string.IsNullOrWhiteSpace(session.Notes) ? "No notes" : session.Notes)
                                         </div>
                                     </td>
                                     <td class="text-end text-nowrap">
-                                        <a asp-controller="StudySession" asp-action="Details" asp-route-id="@session.Id"
-                                           class="btn btn-sm btn-outline-primary">
-                                            Details
-                                        </a>
-                                        <a asp-controller="StudySession" asp-action="Edit" asp-route-id="@session.Id"
-                                           class="btn btn-sm btn-outline-secondary">
-                                            Edit
-                                        </a>
-                                        <a asp-controller="StudySession" asp-action="Delete" asp-route-id="@session.Id"
-                                           class="btn btn-sm btn-outline-danger">
-                                            Delete
-                                        </a>
+                                        <a asp-controller="StudySession" asp-action="Details"
+                                           asp-route-id="@session.Id"
+                                           class="btn btn-sm btn-outline-primary">Details</a>
+                                        <a asp-controller="StudySession" asp-action="Edit"
+                                           asp-route-id="@session.Id"
+                                           class="btn btn-sm btn-outline-secondary">Edit</a>
+                                        <a asp-controller="StudySession" asp-action="Delete"
+                                           asp-route-id="@session.Id"
+                                           class="btn btn-sm btn-outline-danger">Delete</a>
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
 
+                    @if (totalPages > 1)
+                    {
+                        <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+                            <a class="btn btn-outline-secondary btn-sm @(pageNumber == 1 ? "disabled" : "")"
+                                   asp-action="Details"
+                                   asp-route-id="@Model.Id"
+                                   asp-route-pageNumber="@(pageNumber - 1)">
+                                ← Prev
+                            </a>
+                            <span class="text-muted small">Page @pageNumber of @totalPages</span>
+                            <a class="btn btn-outline-secondary btn-sm @(pageNumber == totalPages ? "disabled" : "")"
+                                   asp-action="Details"
+                                   asp-route-id="@Model.Id"
+                                   asp-route-pageNumber="@(pageNumber + 1)">
+                                Next →
+                            </a>
+                        </div>
+                    }
 
                     <div class="mt-3 p-3 bg-light rounded">
                         <strong>Total Study Time:</strong>

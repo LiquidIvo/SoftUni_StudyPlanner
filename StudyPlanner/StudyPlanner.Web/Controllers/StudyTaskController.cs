@@ -78,17 +78,14 @@ namespace StudyPlanner.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id,int pageNumber = PageNumber)
         {
-            
 
             var userId = GetCurrentUserId();
 
-           
-
             try
             {
-                var dto = await _studyTaskService.GetDetailedStudyTaskByIdAsync(id, userId);
+                var (dto,TotalCount) = await _studyTaskService.GetDetailedStudyTaskByIdAsync(id, userId,pageNumber,PageSize);
 
                 var viewModel =  new StudyTaskDetailsViewModel
                 {
@@ -110,6 +107,11 @@ namespace StudyPlanner.Web.Controllers
                         Notes = s.Notes
                     }).ToList()
                 };
+
+                ViewData["PageNumber"] = pageNumber;
+                ViewData["TotalPages"] = (int)Math.Ceiling((double)TotalCount / PageSize);
+
+
 
                 return View(viewModel);
             }
@@ -321,7 +323,7 @@ namespace StudyPlanner.Web.Controllers
             try
             {
 
-                var dto = await _studyTaskService.GetDetailedStudyTaskByIdAsync(id, userId);
+                var dto = await _studyTaskService.GetDetailedStudyTaskForPDF(id, userId);
                 var pdfBytes = _pdfService.GenerateStudyTaskPdf(dto);
                 return File(pdfBytes, "application/pdf", $"StudyTask_{dto.Title}_{DateTime.Now:yyyyMMdd}.pdf");
             }
