@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories.Interfaces;
+using StudyPlanner.GCommon.Enums;
 using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Models.StudyTask;
 
@@ -43,26 +44,43 @@ namespace StudyPlanner.Services.Core.Services
             await _taskRepo.SaveChangesAsync();
         }
 
-        public async Task<List<StudyTaskDTO>> GetAllTasksAsync(Guid userId)
+        public async Task<(List<StudyTaskDTO> Items, int TotalCount)> GetAllTasksAsync(Guid userId, string? searchTerm, string? priority, int pageNumber, int pageSize)
         {
-            return await _taskRepo.All()
-              .Where(s => s.UserId == userId)
-              .Include(t => t.Category)
-              .Include(t => t.Subject)
-              .Select(s => new StudyTaskDTO
-              {
-                    Id = s.Id,
-                    Title = s.Title.ToString(),
-                    Description = s.Description,
-                    DueDate = s.DueDate,
-                    Priority = s.Priority.ToString(),
-                    Status = s.Status.ToString(),
-                    Category = s.Category.Name,
-                    CategoryColor = s.Category.Color,
-                    Subject = s.Subject.Name,
-                    SubjectColor = s.Subject.Color
-              })
-              .ToListAsync();
+            var query = _taskRepo.All()
+            .Where(t => t.UserId == userId)
+            .Include(t => t.Category)
+            .Include(t => t.Subject)
+            .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                query = query.Where(t => t.Title.Contains(searchTerm));
+
+            if(!string.IsNullOrWhiteSpace(priority) && Enum.TryParse<TaskPriority>(priority,out var parsedPriority))
+                query = query.Where(t => t.Priority == parsedPriority);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(st => st.DueDate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(t => new StudyTaskDTO
+                 {
+                    Id = t.Id,
+                    Title = t.Title,
+                    Description = t.Description,
+                    DueDate = t.DueDate,
+                    Priority = t.Priority.ToString(),
+                    Status = t.Status.ToString(),
+                    Category = t.Category.Name,
+                    CategoryColor = t.Category.Color,
+                    Subject = t.Subject.Name,
+                    SubjectColor = t.Subject.Color
+                 })
+                .ToListAsync();
+
+
+            return (items, totalCount);
         }
 
         public async Task<StudyTaskDTO> GetTaskByIdAsync(int id, Guid userId)

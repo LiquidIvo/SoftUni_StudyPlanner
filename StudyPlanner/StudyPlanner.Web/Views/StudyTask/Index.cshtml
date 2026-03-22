@@ -2,7 +2,12 @@
 @model IEnumerable<StudyPlanner.ViewModels.StudyTask.StudyTaskViewModel>
 @{
     ViewData["Title"] = "Study Tasks";
+    var searchTerm = ViewData["SearchTerm"] as string;
+    var priority   = ViewData["Priority"] as string;
+    var pageNumber = (int)(ViewData["PageNumber"] ?? 1);
+    var totalPages = (int)(ViewData["TotalPages"] ?? 1);
 }
+
 <div class="card shadow-sm">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -11,75 +16,124 @@
                 + Create Task
             </a>
         </div>
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Due Date</th>
-                    <th>Priority</th>
-                    <th>Status</th>
-                    <th>Category</th>
-                    <th>Subject</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+
+       
+        <form asp-action="Index" method="get" class="mb-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-6">
+                    <input type="text" name="searchTerm"
+                           value="@searchTerm"
+                           class="form-control"
+                           placeholder="Search by title..." />
+                </div>
+                <div class="col-md-3">
+                    <select name="priority" class="form-select">
+                        <option value="" selected="@(string.IsNullOrEmpty(priority))">All Priorities</option>
+                        <option value="Low" selected="@(priority == "Low")">Low</option>
+                        <option value="Medium" selected="@(priority == "Medium")">Medium</option>
+                        <option value="High" selected="@(priority == "High")">High</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i> Search
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-x"></i> Clear
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        @if (!Model.Any())
+        {
+            <p class="text-muted text-center py-4">No tasks found.</p>
+        }
+        else
+        {
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
                     <tr>
-                        <td style="max-width: 180px; word-wrap: break-word; overflow-wrap: break-word;">
-                            <div style="max-height: 4.5em; overflow: hidden; white-space: normal;">@item.Title</div>
-                        </td>
-                        <td style="max-width: 300px; word-wrap: break-word; overflow-wrap: break-word;">
-                            <div style="max-height: 4.5em; overflow: hidden; white-space: normal;">
-                                @item.Description
-                            </div>
-                        </td>
-                        <td>
-                            @item.DueDate.ToString(DateFormatForStudyTask)
-                        </td>
-                        <td>
-                            <span class="badge @(item.Priority == "High" ? "bg-danger" :
-                                                        item.Priority == "Medium" ? "bg-warning text-dark" :
-                                                        "bg-secondary")">
-                                @item.Priority
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge @(item.Status == "Completed" ? "bg-success" :
-                                                                 item.Status == "InProgress" ? "bg-info" :
-                                                                 "bg-secondary")">
-                                @item.Status
-                            </span>
-                        </td>
-                        <td style="max-width: 120px;">
-                            <span class="badge d-inline-block text-wrap" style="background-color:@item.CategoryColor; color:#fff; max-width: 100%;">
-                                @item.Category
-                            </span>
-                        </td>
-                        <td style="max-width: 120px;">
-                            <span class="badge d-inline-block text-wrap" style="background-color:@item.SubjectColor; color:#fff; max-width: 100%;">
-                                @item.Subject
-                            </span>
-                        </td>
-                        <td class="text-end text-nowrap">
-                            <a asp-action="Details" asp-route-id="@item.Id"
-                               class="btn btn-sm btn-outline-primary">
-                                Details
-                            </a>
-                            <a asp-action="Edit" asp-route-id="@item.Id"
-                               class="btn btn-sm btn-outline-secondary">
-                                Edit
-                            </a>
-                            <a asp-action="Delete" asp-route-id="@item.Id"
-                               class="btn btn-sm btn-outline-danger">
-                                Delete
-                            </a>
-                        </td>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Due Date</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Category</th>
+                        <th>Subject</th>
+                        <th class="text-end">Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="max-width:180px; word-wrap:break-word; overflow-wrap:break-word;">
+                                <div style="max-height:4.5em; overflow:hidden; white-space:normal;">@item.Title</div>
+                            </td>
+                            <td style="max-width:300px; word-wrap:break-word; overflow-wrap:break-word;">
+                                <div style="max-height:4.5em; overflow:hidden; white-space:normal;">@item.Description</div>
+                            </td>
+                            <td>@item.DueDate.ToString(DateFormatForStudyTask)</td>
+                            <td>
+                                <span class="badge @(item.Priority == "High"   ? "bg-danger" :
+                                                     item.Priority == "Medium" ? "bg-warning text-dark" :
+                                                     "bg-secondary")">
+                                    @item.Priority
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge @(item.Status == "Completed" ? "bg-success" :
+                                                     item.Status == "InProgress" ? "bg-info" :
+                                                     "bg-secondary")">
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td style="max-width:120px;">
+                                <span class="badge d-inline-block text-wrap"
+                                      style="background-color:@item.CategoryColor; color:#fff; max-width:100%;">
+                                    @item.Category
+                                </span>
+                            </td>
+                            <td style="max-width:120px;">
+                                <span class="badge d-inline-block text-wrap"
+                                      style="background-color:@item.SubjectColor; color:#fff; max-width:100%;">
+                                    @item.Subject
+                                </span>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-primary">Details</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (totalPages > 1)
+            {
+                <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+                    <a class="btn btn-outline-secondary btn-sm @(pageNumber == 1 ? "disabled" : "")"
+                       asp-action="Index"
+                       asp-route-pageNumber="@(pageNumber - 1)"
+                       asp-route-searchTerm="@searchTerm"
+                       asp-route-priority="@priority">
+                        ← Prev
+                    </a>
+                    <span class="text-muted small">Page @pageNumber of @totalPages</span>
+                    <a class="btn btn-outline-secondary btn-sm @(pageNumber == totalPages ? "disabled" : "")"
+                       asp-action="Index"
+                       asp-route-pageNumber="@(pageNumber + 1)"
+                       asp-route-searchTerm="@searchTerm"
+                       asp-route-priority="@priority">
+                        Next →
+                    </a>
+                </div>
+            }
+        }
     </div>
 </div>

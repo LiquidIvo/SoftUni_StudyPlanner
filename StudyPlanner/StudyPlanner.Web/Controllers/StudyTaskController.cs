@@ -39,14 +39,14 @@ namespace StudyPlanner.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchTerm,string? priority,int pageNumber = PageNumber)
         {
             var userId = GetCurrentUserId();
 
 
             try
             {
-                var dtos = await _studyTaskService.GetAllTasksAsync(userId);
+                var (dtos,totalCount) = await _studyTaskService.GetAllTasksAsync(userId,searchTerm,priority,pageNumber,PageSize);
 
                 var viewModels = dtos.Select(d => new StudyTaskViewModel
                 {
@@ -61,6 +61,12 @@ namespace StudyPlanner.Web.Controllers
                     Subject = d.Subject,
                     SubjectColor = d.SubjectColor
                 }).ToList();
+
+                ViewData["SearchTerm"] = searchTerm;
+                ViewData["Priority"] = priority;
+                ViewData["PageNumber"] = pageNumber;
+                ViewData["TotalPages"] = (int)Math.Ceiling((double)totalCount / PageSize);
+
 
                 return View(viewModels);
             }
