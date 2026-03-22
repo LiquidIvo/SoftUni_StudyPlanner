@@ -14,7 +14,7 @@ namespace StudyPlanner.Data
         public virtual DbSet<Subject> Subjects { get; set; } = null!;
         public virtual DbSet<StudyTask> StudyTasks { get; set; } = null!;
         public virtual DbSet<StudySession> StudySessions { get; set; } = null!;
-
+        public virtual DbSet<Resource> Resources { get; set; } = null!;
 
         override protected void OnModelCreating(ModelBuilder builder)
         {

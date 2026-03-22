@@ -48,6 +48,7 @@ namespace StudyPlanner.Web
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ISubjectService, SubjectService>();
+            builder.Services.AddScoped<IResourceService, ResourceService>();
             builder.Services.AddScoped<IStudyTaskService, StudyTaskService>();
             builder.Services.AddScoped<IStudySessionService, StudySessionService>();
             builder.Services.AddScoped<IPdfService, PdfService>();

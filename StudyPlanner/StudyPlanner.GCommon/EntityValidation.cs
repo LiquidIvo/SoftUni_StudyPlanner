@@ -22,5 +22,13 @@
 
         // Identity
         public const int FullNameMaxLength = 50;
+
+
+        //Resource
+        public const int ResourceTitleMaxLength = 100;
+        public const int ResourceUrlMaxLength = 500;
+        public const int ResourceDescriptionMaxLength = 300;
+        public const int ResourceTitleMinLength = 1;
+
     }
 }

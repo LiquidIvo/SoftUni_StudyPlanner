@@ -1,0 +1,97 @@
+﻿@using StudyPlanner.ViewModels.Resource
+@model IEnumerable<ResourceViewModel>
+@{
+    ViewData["Title"] = "Resources";
+    var searchTerm = ViewData["SearchTerm"] as string;
+    var pageNumber = (int)(ViewData["PageNumber"] ?? 1);
+    var totalPages = (int)(ViewData["TotalPages"] ?? 1);
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0">🔗 Resources</h3>
+            <a asp-action="Create" class="btn btn-primary">
+                + Add Resource
+            </a>
+        </div>
+
+        <form asp-action="Index" method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="searchTerm"
+                       value="@searchTerm"
+                       class="form-control"
+                       placeholder="Search by title..." />
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i> Search
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-x"></i> Clear
+                </a>
+            </div>
+        </form>
+
+        @if (!Model.Any())
+        {
+            <p class="text-muted text-center py-4">No resources found.</p>
+        }
+        else
+        {
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Link</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td class="text-muted" style="max-width:300px;">
+                                <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"
+                                     title="@item.Description">
+                                    @(string.IsNullOrWhiteSpace(item.Description) ? "—" : item.Description)
+                                </div>
+                            </td>
+                            <td>
+                                <a href="@item.Url" target="_blank" rel="noopener noreferrer"
+                                       class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-box-arrow-up-right me-1"></i> Open
+                                </a>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (totalPages > 1)
+            {
+                <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+                    <a class="btn btn-outline-secondary btn-sm @(pageNumber == 1 ? "disabled" : "")"
+                           asp-action="Index"
+                           asp-route-pageNumber="@(pageNumber - 1)"
+                           asp-route-searchTerm="@searchTerm">
+                        <i class="bi bi-chevron-left"></i> Prev
+                    </a>
+                    <span class="text-muted small">Page @pageNumber of @totalPages</span>
+                    <a class="btn btn-outline-secondary btn-sm @(pageNumber == totalPages ? "disabled" : "")"
+                           asp-action="Index"
+                           asp-route-pageNumber="@(pageNumber + 1)"
+                           asp-route-searchTerm="@searchTerm">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            }
+        }
+    </div>
+</div>
