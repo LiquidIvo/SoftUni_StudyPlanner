@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StudyPlanner.Data\StudyPlanner.Data.csproj" />
+    <ProjectReference Include="..\StudyPlanner.Services.Models\StudyPlanner.Services.Models.csproj" />
     <ProjectReference Include="..\StudyPlanner.ViewModels\StudyPlanner.ViewModels.csproj" />
   </ItemGroup>
 

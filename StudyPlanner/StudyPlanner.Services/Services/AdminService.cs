@@ -3,11 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Models.Admin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StudyPlanner.Services.Core.Services
 {

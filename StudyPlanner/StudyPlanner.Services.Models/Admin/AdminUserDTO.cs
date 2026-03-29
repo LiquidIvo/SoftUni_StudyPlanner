@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace StudyPlanner.Services.Core.Models.Admin
+﻿namespace StudyPlanner.Services.Core.Models.Admin
 {
     public class AdminUserDTO
     {
