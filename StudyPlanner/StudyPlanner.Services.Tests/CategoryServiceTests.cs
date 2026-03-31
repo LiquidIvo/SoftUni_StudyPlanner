@@ -1,7 +1,5 @@
 ﻿using MockQueryable;
-using MockQueryable.Moq;
 using Moq;
-using NUnit.Framework;
 using StudyPlanner.Data.Models;
 using StudyPlanner.Data.Repositories.Interfaces;
 using StudyPlanner.Services.Core.Models.Category;

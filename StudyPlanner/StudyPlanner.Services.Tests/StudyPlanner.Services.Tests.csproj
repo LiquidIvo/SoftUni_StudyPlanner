@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StudyPlanner.Data.Models\StudyPlanner.Data.Models.csproj" />
     <ProjectReference Include="..\StudyPlanner.Data\StudyPlanner.Data.csproj" />
     <ProjectReference Include="..\StudyPlanner.GCommon\StudyPlanner.GCommon.csproj" />
     <ProjectReference Include="..\StudyPlanner.Services\StudyPlanner.Services.Core.csproj" />
