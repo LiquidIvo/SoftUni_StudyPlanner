@@ -15,6 +15,8 @@ namespace StudyPlanner.Web.Areas.Admin.Controllers
         private readonly IAdminService _adminService;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        private const int PageSize = 10;
+
         public UsersController(
             IAdminService adminService,
             UserManager<ApplicationUser> userManager)
@@ -24,17 +26,21 @@ namespace StudyPlanner.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchTerm, int pageNumber = 1)
         {
-            var dtos = await _adminService.GetAllUsersAsync();
+            var (dtos, totalCount) = await _adminService.GetAllUsersAsync(searchTerm, pageNumber, PageSize);
 
-           
             var viewModels = dtos.Select(d => new AdminUserViewModel
             {
                 Id = d.Id.ToString(),
                 Email = d.Email,
                 FullName = d.FullName
             }).ToList();
+
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.CurrentPage = pageNumber;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)PageSize);
+            ViewBag.TotalCount = totalCount;
 
             return View(viewModels);
         }
@@ -61,11 +67,10 @@ namespace StudyPlanner.Web.Areas.Admin.Controllers
             }
         }
 
-        [HttpPost,ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            
             var currentUserId = _userManager.GetUserId(User);
             if (id.ToString() == currentUserId)
             {

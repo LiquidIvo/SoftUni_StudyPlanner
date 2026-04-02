@@ -9,9 +9,8 @@ namespace StudyPlanner.Services.Core.Contracts
 {
     public interface IAdminService
     {
-        
-        Task<List<AdminUserDTO>> GetAllUsersAsync();
 
+        Task<(List<AdminUserDTO> Items, int TotalCount)> GetAllUsersAsync(string? searchTerm, int pageNumber, int pageSize);
         Task<AdminUserDTO> GetUserByIdAsync(Guid id);
         Task DeleteUserAsync(Guid id);
     }

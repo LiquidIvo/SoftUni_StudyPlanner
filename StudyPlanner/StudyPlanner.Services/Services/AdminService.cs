@@ -15,9 +15,19 @@ namespace StudyPlanner.Services.Core.Services
             _userManager = userManager;
         }
 
-        public async Task<List<AdminUserDTO>> GetAllUsersAsync()
+        public async Task<(List<AdminUserDTO> Items, int TotalCount)> GetAllUsersAsync(string? searchTerm, int pageNumber, int pageSize)
         {
-            return await _userManager.Users
+            var query = _userManager.Users.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                query = query.Where(u => u.Email!.Contains(searchTerm) || u.FullName!.Contains(searchTerm));
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(u => u.Email)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .Select(u => new AdminUserDTO
                 {
                     Id = u.Id,
@@ -25,7 +35,10 @@ namespace StudyPlanner.Services.Core.Services
                     FullName = u.FullName
                 })
                 .ToListAsync();
+
+            return (items, totalCount);
         }
+
         public async Task<AdminUserDTO> GetUserByIdAsync(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
@@ -40,6 +53,7 @@ namespace StudyPlanner.Services.Core.Services
                 FullName = user.FullName
             };
         }
+
         public async Task DeleteUserAsync(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
