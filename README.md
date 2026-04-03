@@ -152,7 +152,7 @@ Database → Entity → Service → DTO → Controller → ViewModel → View
 ### Additional Features
 - ✅ PDF download for study tasks with their sessions (QuestPDF)
 - ✅ Motivational quote in footer via ZenQuotes public API (AJAX)
-- ✅ Custom error pages (400, 401, 403, 404, 500)
+- ✅ Custom error pages (400, 401, 403, 404)
 - ✅ Responsive Bootstrap 5 UI
 - ✅ Partial views and sections used throughout
 - ✅ Total study time calculation per task
