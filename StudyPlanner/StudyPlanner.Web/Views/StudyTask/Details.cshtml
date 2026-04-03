@@ -151,7 +151,7 @@
                     }
 
                     <div class="mt-3 p-3 bg-light rounded">
-                        <strong>Total Study Time:</strong>
+                        <strong>Total Study Time Of The Current Page:</strong>
                         <span class="badge bg-primary ms-2">
                             @{
                                 var totalMinutes = Model.StudySessions.Sum(s => (s.EndTime - s.StartTime).TotalMinutes);
