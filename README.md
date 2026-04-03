@@ -15,7 +15,7 @@
 - [About the Project](#-about-the-project)
 - [Technologies Used](#️-technologies-used)
 - [Architecture](#️-architecture)
-- [Entity Models](#-entity-models)
+- [Entity Models](#️-entity-models)
 - [Features](#-features)
 - [User Roles & Permissions](#-user-roles--permissions)
 - [Prerequisites](#-prerequisites)
