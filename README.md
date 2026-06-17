@@ -186,8 +186,8 @@ Roles are seeded automatically on startup. Role-based authorization uses `[Autho
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/LiquidIvo/SoftUni_StudyPlanner.git
-cd SoftUni_StudyPlanner
+git clone https://github.com/LiquidIvo/StudyPlanner.git
+cd StudyPlanner
 ```
 
 ### 2. Restore dependencies
@@ -262,7 +262,7 @@ The connection string is configured in `appsettings.json`. The app checks for `D
 ## 📁 Project Structure
 
 ```
-SoftUni_StudyPlanner/
+StudyPlanner/
 │
 ├── StudyPlanner.GCommon/
 │   ├── ApplicationConstants.cs
@@ -436,8 +436,7 @@ Fetched client-side via AJAX on every page load. Falls back to a hardcoded quote
 
 **LiquidIvo** — [@LiquidIvo](https://github.com/LiquidIvo)
 
-Project Link: [https://github.com/LiquidIvo/SoftUni_StudyPlanner](https://github.com/LiquidIvo/SoftUni_StudyPlanner)
+Project Link: [https://github.com/LiquidIvo/StudyPlanner](https://github.com/LiquidIvo/StudyPlanner)
 
----
 
-*Built as part of the **ASP.NET Advanced** course — SoftUni 2026.*
+
