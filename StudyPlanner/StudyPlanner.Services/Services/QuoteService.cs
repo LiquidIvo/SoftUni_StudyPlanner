@@ -1,5 +1,6 @@
 ﻿using StudyPlanner.Services.Core.Contracts;
 using StudyPlanner.Services.Core.Models.Quote;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace StudyPlanner.Services.Core.Services
@@ -17,35 +18,21 @@ namespace StudyPlanner.Services.Core.Services
 
         public async Task<QuoteDTO> GetRandomQuoteAsync()
         {
-            try
-            {
-                var response = await _httpClient.GetAsync("https://zenquotes.io/api/random");
-                response.EnsureSuccessStatusCode();
+            var response = await _httpClient.GetAsync("https://zenquotes.io/api/random");
+            response.EnsureSuccessStatusCode();
 
-                var json = await response.Content.ReadAsStringAsync();
-                var results = JsonSerializer.Deserialize<List<ZenQuoteResponse>>(json);
+            var results = await response.Content
+                .ReadFromJsonAsync<List<ZenQuoteResponse>>();
 
-                if (results == null || results.Count == 0)
-                {
-                    throw new HttpRequestException("No quote.");
-                  
-                }
+            if (results == null || results.Count == 0)
+                throw new Exception("No quote returned from API.");
 
-                return new QuoteDTO
-                {
-                    Text = results[0].q,
-                    Author = results[0].a
-                };
-            }
-            catch (HttpRequestException)
+            return new QuoteDTO
             {
-                throw new HttpRequestException();
-            }
-            catch (Exception)
-            {
-                throw new Exception();
-            }
-          
+                Text = results[0].q,
+                Author = results[0].a
+            };
+
 
 
         }

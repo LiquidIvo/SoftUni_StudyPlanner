@@ -16,7 +16,7 @@ namespace StudyPlanner.Web.Controllers.Api
         }
 
         
-        
+        [HttpGet]
         public async Task<ActionResult> GetQuote()
         {
             try
